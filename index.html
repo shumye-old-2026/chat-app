@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>የኔ ቻት አፕ</title>
+    <meta charset="UTF-8"
+// 3. ኢሞጂ ሲነካ መልዕክት የሚልክ ፋንክሽን
+  function addEmoji(emoji) {
+    const messageInput = document.getElementById('messageInput');
+    const userField = document.getElementById('userInput');
+
+    if (messageInput) {
+      messageInput.value += emoji;
+      messageInput.focus();
+
+      const data = {
+        user: userField ? userField.value : 'Guest',
+        text: messageInput.value
+      };
+
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(data));
+      }
+    }
+  }
+
+  // 4. መልዕክቶችን ማጽጃ
+  function clearMessages() {
+    if (messagesDiv) {
+      messagesDiv.innerHTML = '';
+    }
+  }
+</script>
+</body>
+: <style>
+  body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+  
+  #messages { height: 400px; width: 100%; max-width: 400px; border: 1px solid #ddd; background-color: white; overflow-y: auto; display: flex; flex-direction: column; padding: 10px; border-radius: 10px; }
+
+  .message { padding: 8px 12px; margin: 5px; border-radius: 15px; max-width: 75%; }
+
+  .sent { align-self: flex-end; background-color: #dcf8c6; } /* የላኪው በቀኝ */
+
+  .received { align-self: flex-start; background-color: #e4e6eb; } /* የተቀባዩ በግራ */
+</style>
+} /* የተላኩ መልእክቶች (በቀኝ በኩ
+ // 3. ኢሞጂ ሲነካ መልዕክት የሚልክ ፋንክሽን
+  function addEmoji(emoji) {
+    const messageInput = document.getElementById('messageInput');
+    const userField = document.getElementById('userInput');
+
+    if (messageInput) {
+      messageInput.value += emoji;
+      messageInput.focus();
+
+      const data = {
+        user: userField ? userField.value : 'Guest',
+        text: messageInput.value
+      };
+
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(data));
+      }
+    }
+  }
+
+  // 4. መልዕክቶችን ማጽጃ
+  function clearMessages() {
+    if (messagesDiv) {
+      messagesDiv.innerHTML = '';
+    }
+  }
+ document.getElementById('messageInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      addEmoji(''); 
+    }
+  });
+</script>
+</body>
+</html>
