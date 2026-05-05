@@ -35,15 +35,11 @@
     </div>
 
     <script>
-        // 3. ስራ (JavaScript)
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const emojiBtn = document.getElementById('emoji-btn');
-
-        // የ WebSocket ግንኙነት (ካለህ)
-        // const ws = new WebSocket('ws://your-websocket-url');
 
         // መልዕክት ለመላክ
         function sendMessage() {
@@ -56,12 +52,6 @@
                 messagesDiv.innerHTML += messageHtml;
                 messageInput.value = ""; // የመጻፊያውን ቦታ አጽዳ
                 messagesDiv.scrollTop = messagesDiv.scrollHeight; // ወደ ታች ውረድ
-                
-                // ኮዱን ወደ ዌብሶኬት ለመላክ (WebSocket ካለህ)
-                // if (ws.readyState === WebSocket.OPEN) {
-                //     const data = { user: user, text: text };
-                //     ws.send(JSON.stringify(data));
-                // }
             }
         }
 
