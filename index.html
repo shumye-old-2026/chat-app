@@ -3,41 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>የኔ ቻት አፕ</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #chat-container { width: 400px; height: 500px; background: white; display: flex; flex-direction: column; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px; border-radius: 10px; max-width: 80%; word-wrap: break-word; }
-        .user { align-self: flex-end; background: #0084ff; color: white; }
-        .bot { align-self: flex-start; background: #e4e6eb; color: black; }
-        .input-area { padding: 15px; border-top: 1px solid #ddd; display: flex; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-        button { background: #0084ff; color: white; border: none; padding: 10px 15px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
+        /* 1. ዲዛይን (CSS) - የተስተካከለ */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #chat-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            height: 400px;
+            padding: 16px;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .message {
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 15px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .sent {
+            align-self: flex-end;
+            background-color: #dcf8c6; /* የተቀባለው በቀኝ በኩል */
+        }
+
+        .received {
+            align-self: flex-start;
+            background-color: #e4e6eb; /* የተቀባለው በግራ በኩል */
+        }
+        
+        #input-area {
+            display: flex;
+            padding: 10px;
+            background: #f0f2f5;
+            align-items: center;
+            box-sizing: border-box; /* ይሄንን ጨምር */
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            margin-right: 5px;
+            min-width: 0; /* ይሄንን ጨምር */
+        }
+        
+        /* የስም መጻፊያውን ሳጥን መጠን ለመቀነስ */
+        #userInput {
+            width: 60px;
+            max-width: 80px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            margin-right: 5px;
+            text-align: center;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            flex-shrink: 0; /* ይሄንን ጨምር */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #emoji-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 5px;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
+
     <div id="chat-container">
-        <div id="messages"></div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="መልእክት ይጻፉ...">
-            <button onclick="sendMessage()">ላክ</button>
+        <div id="messages">
+            <div class="message received">ሰላም! እንዴት ነህ?</div>
+            <div class="message sent">ሰላም! እኔ ደህና ነኝ። ያንተስ?</div>
+        </div>
+        <div id="input-area">
+            <button id="emoji-btn">😊</button>
+            <input type="text" id="messageInput" placeholder="መልዕክት ይጻፉ...">
+            <input type="text" id="userInput" placeholder="Guest" title="ስምህ (Guest)">
+            <button id="sendBtn">ላክ</button>
         </div>
     </div>
 
     <script>
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const emojiBtn = document.getElementById('emoji-btn');
+
+        // መልዕክት ለመላክ
         function sendMessage() {
-            const input = document.getElementById('userInput');
-            const messages = document.getElementById('messages');
-            if (input.value.trim() !== "") {
-                const msg = document.createElement('div');
-                msg.className = 'message user';
-                msg.textContent = input.value;
-                messages.appendChild(msg);
-                input.value = "";
-                messages.scrollTop = messages.scrollHeight;
+            const text = messageInput.value;
+            const user = userInput.value || 'Guest';
+[5/7/2026 1:56 AM] Shumyetadesse Asefa: if (text.trim() !== "") {
+                // መልዕክቱን በዌብሳይቱ ላይ አሳይ
+                const messageHtml = <div class="message sent"><b>${user}:</b> ${text}</div>;
+                messagesDiv.innerHTML += messageHtml;
+                messageInput.value = ""; // የመጻፊያውን ቦታ አጽዳ
+                messagesDiv.scrollTop = messagesDiv.scrollHeight; // ወደ ታች ውረድ
             }
         }
+
+        // 'ላክ' ቁልፍ ሲጫን
+        sendBtn.addEventListener('click', sendMessage);
+
+        // 'Enter' ቁልፍ ሲጫን መልዕክት ላክ
+        messageInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // ኢሞጂ ለመጨመር
+        emojiBtn.addEventListener('click', () => {
+            messageInput.value += "😊";
+            messageInput.focus();
+        });
     </script>
+
 </body>
 </html>
