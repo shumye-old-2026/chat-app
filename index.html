@@ -135,8 +135,7 @@
         // መልዕክት ለመላክ
         function sendMessage() {
             const text = messageInput.value;
-            const user = userInput.value || 'Guest';
-[5/7/2026 2:08 AM] Shumyetadesse Asefa: if (text.trim() !== "") {
+            const user = userInput.value || 'Guest';if (text.trim() !== "") {
                 // መልዕክቱን በዌብሳይቱ ላይ አሳይ
                 const messageHtml = <div class="message sent"><b>${user}:</b> ${text}</div>;
                 messagesDiv.innerHTML += messageHtml;
