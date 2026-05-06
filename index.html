@@ -1,3 +1,4 @@
+Shumyetadesse Asefa, [06.05.2026 16:25]
 <!DOCTYPE html>
 <html lang="am">
 <head>
@@ -6,7 +7,7 @@
     <title>የቻት መተግበሪያ</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             display: flex;
             justify-content: center;
@@ -22,43 +23,55 @@
             background: white;
             display: flex;
             flex-direction: column;
-            border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
         }
 
         #messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background-color: #e5ddd5;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
         .message {
-            padding: 10px 15px;
-            border-radius: 15px;
             max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
             font-size: 15px;
+            position: relative;
+            line-height: 1.4;
         }
 
-        .sent {
+        .user-message {
             align-self: flex-end;
-            background-color: #dcf8c6;
-            border-bottom-right-radius: 2px;
+            background-color: #0084ff;
+            color: white;
+            border-bottom-right-radius: 4px;
         }
 
-        .received {
+        .bot-message {
             align-self: flex-start;
-            background-color: white;
-            border-bottom-left-radius: 2px;
+            background-color: #e4e6eb;
+            color: black;
+            border-bottom-left-radius: 4px;
         }
 
-        #input-area {
-            display: flex;
+        .timestamp {
+            font-size: 10px;
+            margin-top: 5px;
+            opacity: 0.7;
+            display: block;
+            text-align: right;
+        }
+
+        .input-area {
             padding: 15px;
-            background: #f0f0f0;
+            border-top: 1px solid #eee;
+            display: flex;
             gap: 10px;
         }
 
@@ -74,47 +87,68 @@
             background-color: #0084ff;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 0 20px;
             border-radius: 25px;
             cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #0073e6;
         }
     </style>
 </head>
 <body>
 
 <div id="chat-container">
-    <div id="messages">
-        <div class="message received">ሰላም! እንዴት ነህ?</div>
-    </div>
-    <div id="input-area">
+    <div id="messages"></div>
+    <div class="input-area">
         <input type="text" id="userInput" placeholder="መልእክት ይጻፉ...">
-        <button id="sendBtn">ላክ</button>
+        <button onclick="sendMessage()">ላክ</button>
     </div>
 </div>
 
 <script>
-    /* ስህተቶቹን ለማጥፋት ስሞቹን (Variables) አንድ ጊዜ ብቻ እንገልጻለን */
-    const chatBox = document.getElementById('messages');
-    const chatInput = document.getElementById('userInput');
-    const chatBtn = document.getElementById('sendBtn');
+    function getCurrentTime() {
+        const now = new Date();
+        return now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
+    }
 
-    function sendMsg() {
-        const text = chatInput.value.trim();
-        if (text !== "") {
-            const div = document.createElement('div');
-            div.classList.add('message', 'sent');
-            div.textContent = text;
-            chatBox.appendChild(div);
-            chatInput.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
+    function sendMessage() {
+        const input = document.getElementById('userInput');
+        const messageText = input.value.trim();
+        
+        if (messageText !== "") {
+            const messagesDiv = document.getElementById('messages');
+            
+            // የሰውየው መልእክት
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.innerHTML = messageText + <span class="timestamp">${getCurrentTime()}</span>;
+            messagesDiv.appendChild(userDiv);
+            
+            input.value = "";
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // የቦቱ መልስ (ለሙከራ)
+            setTimeout(() => {
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.innerHTML = "መልእክትህ ደርሶኛል!" + <span class="timestamp">${getCurrentTime()}</span>;
+                messagesDiv.appendChild(botDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 1000);
         }
     }
 
-    chatBtn.addEventListener('click', sendMsg);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMsg();
+    // በ Enter ቁልፍ ለመላክ
+    document.getElementById('userInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
     });
 </script>
 
+Shumyetadesse Asefa, [06.05.2026 16:25]
 </body>
 </html>
