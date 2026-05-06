@@ -1,151 +1,43 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="am">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>የቻት መተግበሪያ</title>
+    <title>Chat App</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        #chat-container {
-            width: 100%;
-            max-width: 450px;
-            height: 90vh;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        #messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            font-size: 15px;
-            position: relative;
-            line-height: 1.4;
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background-color: #0084ff;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .bot-message {
-            align-self: flex-start;
-            background-color: #e4e6eb;
-            color: black;
-            border-bottom-left-radius: 4px;
-        }
-
-        .timestamp {
-            font-size: 10px;
-            margin-top: 5px;
-            opacity: 0.7;
-            display: block;
-            text-align: right;
-        }
-
-        .input-area {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            outline: none;
-        }
-
-        button {
-            background-color: #0084ff;
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #0073e6;
-        }
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 400px; height: 500px; background: white; display: flex; flex-direction: column; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px; border-radius: 10px; max-width: 80%; word-wrap: break-word; }
+        .user { align-self: flex-end; background: #0084ff; color: white; }
+        .bot { align-self: flex-start; background: #e4e6eb; color: black; }
+        .input-area { padding: 15px; border-top: 1px solid #ddd; display: flex; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
+        button { background: #0084ff; color: white; border: none; padding: 10px 15px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-<div id="chat-container">
-    <div id="messages"></div>
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="መልእክት ይጻፉ...">
-        <button onclick="sendMessage()">ላክ</button>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="መልእክት ይጻፉ...">
+            <button onclick="sendMessage()">ላክ</button>
+        </div>
     </div>
-</div>
 
-<script>
-    function getCurrentTime() {
-        const now = new Date();
-        return now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
-    }
-
-    function sendMessage() {
-        const input = document.getElementById('userInput');
-        const messageText = input.value.trim();
-        
-        if (messageText !== "") {
-            const messagesDiv = document.getElementById('messages');
-            
-            // የሰውየው መልእክት
-            const userDiv = document.createElement('div');
-            userDiv.className = 'message user-message';
-            userDiv.innerHTML = messageText + <span class="timestamp">${getCurrentTime()}</span>;
-            messagesDiv.appendChild(userDiv);
-            
-            input.value = "";
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            // የቦቱ መልስ (ለሙከራ)
-            setTimeout(() => {
-                const botDiv = document.createElement('div');
-                botDiv.className = 'message bot-message';
-                botDiv.innerHTML = "መልእክትህ ደርሶኛል!" + <span class="timestamp">${getCurrentTime()}</span>;
-                messagesDiv.appendChild(botDiv);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }, 1000);
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const messages = document.getElementById('messages');
+            if (input.value.trim() !== "") {
+                const msg = document.createElement('div');
+                msg.className = 'message user';
+                msg.textContent = input.value;
+                messages.appendChild(msg);
+                input.value = "";
+                messages.scrollTop = messages.scrollHeight;
+            }
         }
-    }
-
-    // በ Enter ቁልፍ ለመላክ
-    document.getElementById('userInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-</script> 
- </body>
+    </script>
+</body>
 </html>
