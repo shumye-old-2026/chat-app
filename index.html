@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>የኔ ቻት አፕ</title>
     <style>
-        /* 1. ዲዛይን (CSS) - የተስተካከለ */
+        /* 1. ዲዛይን (CSS) */
         body {
             font-family: sans-serif;
             background-color: #f0f2f5;
@@ -60,7 +60,7 @@
             padding: 10px;
             background: #f0f2f5;
             align-items: center;
-            box-sizing: border-box; /* ይሄንን ጨምር */
+            box-sizing: border-box;
         }
 
         input {
@@ -70,7 +70,7 @@
             border-radius: 20px;
             outline: none;
             margin-right: 5px;
-            min-width: 0; /* ይሄንን ጨምር */
+            min-width: 0;
         }
         
         /* የስም መጻፊያውን ሳጥን መጠን ለመቀነስ */
@@ -93,7 +93,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 1rem;
-            flex-shrink: 0; /* ይሄንን ጨምር */
+            flex-shrink: 0;
         }
 
         button:hover {
@@ -135,8 +135,9 @@
         // መልዕክት ለመላክ
         function sendMessage() {
             const text = messageInput.value;
-            const user = userInput.value || 'Guest';if (text.trim() !== "") {
-                // መልዕክቱን በዌብሳይቱ ላይ አሳይ
+            const user = userInput.value || 'Guest';
+
+            if (text.trim() !== "") { // መልዕክቱን በዌብሳይቱ ላይ አሳይ
                 const messageHtml = <div class="message sent"><b>${user}:</b> ${text}</div>;
                 messagesDiv.innerHTML += messageHtml;
                 messageInput.value = ""; // የመጻፊያውን ቦታ አጽዳ
