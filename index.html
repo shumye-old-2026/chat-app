@@ -67,22 +67,23 @@
 
     // መልዕክት የሚልከው ተግባር
     function sendMessage() {
-        const text = messageInput.value.trim();
-        const user = userInput.value.trim() || 'Guest';
-        const time = getCurrentTime();
+    const text = messageInput.value.trim();
+    const user = userInput.value.trim() || 'Guest';
+    
+    // ሰዓቱን ለማውጣት
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        if (text !== "") {
-            const messageHtml = 
-                <div class="message sent">
-                    <b>${user}:</b> ${text}
-                    <div style="font-size: 0.7rem; color: #888; text-align: right;">${time}</div>
-                </div>
-            ;
-            messagesDiv.innerHTML += messageHtml;
-            messageInput.value = ""; 
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
+    if (text !== "") {
+        const messageHtml = 
+            <div class="message sent">
+                <b>${user}:</b> ${text} 
+                <span style="font-size: 0.7rem; color: gray; margin-left: 10px;">${time}</span>
+            </div>;
+        messagesDiv.innerHTML += messageHtml;
+        messageInput.value = ""; 
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
+}
 
     // ቁልፉ ሲጫን እንዲሰራ ማድረግ (ይህ በጣም አስፈላጊ ነው)
     sendBtn.addEventListener('click', sendMessage);
