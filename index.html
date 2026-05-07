@@ -50,53 +50,47 @@
     </div>
 
     <script>
-        const messagesDiv = document.getElementById('messages');
-        const messageInput = document.getElementById('messageInput');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const emojiBtn = document.getElementById('emoji-btn');
+    const messagesDiv = document.getElementById('messages');
+    const messageInput = document.getElementById('messageInput');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn'); // ቁልፉን እዚህ ጋር ይይዛል
 
-        // የአሁኑን ሰዓት ለማግኘት
-        function getCurrentTime() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12; 
-            return hours + ":" + minutes + " " + ampm;
+    // ሰዓቱን በትክክል የሚያወጣ ተግባር
+    function getCurrentTime() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; 
+        return hours + ":" + minutes + " " + ampm;
+    }
+
+    // መልዕክት የሚልከው ተግባር
+    function sendMessage() {
+        const text = messageInput.value.trim();
+        const user = userInput.value.trim() || 'Guest';
+        const time = getCurrentTime();
+
+        if (text !== "") {
+            const messageHtml = 
+                <div class="message sent">
+                    <b>${user}:</b> ${text}
+                    <div style="font-size: 0.7rem; color: #888; text-align: right;">${time}</div>
+                </div>
+            ;
+            messagesDiv.innerHTML += messageHtml;
+            messageInput.value = ""; 
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
+    }
 
-        // መልዕክት ለመላክ
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            const user = userInput.value.trim() || 'Guest';
-            const time = getCurrentTime();
+    // ቁልፉ ሲጫን እንዲሰራ ማድረግ (ይህ በጣም አስፈላጊ ነው)
+    sendBtn.addEventListener('click', sendMessage);
 
-            if (text !== "") {
-                const messageHtml = 
-                    <div class="message sent">
-                        <b>${user}:</b> ${text}
-                        <span class="time">${time}</span>
-                    </div>
-                ;
-                messagesDiv.innerHTML += messageHtml;
-                messageInput.value = ""; 
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
-        }
-
-        // ቁልፎቹ ሲጫኑ የሚሰሩ ስራዎች
-        sendBtn.addEventListener('click', sendMessage);
-
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        }); 
-
-
-        emojiBtn.addEventListener('click', () => {
-            messageInput.value += "😊";
-            messageInput.focus();
-        });
-    </script>
+    // በ 'Enter' ቁልፍ እንዲሰራም መጨመር
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>
 </body>
-</html>
+</html>r
