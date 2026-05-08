@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="am">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Chat Persistent</title>
+    <title>Global Real-time Chat</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        body { font-family: sans-serif; background: #e5ddd5; display: flex; justify-content: center; padding: 20px; }
-        #chat { width: 350px; background: white; border-radius: 10px; display: flex; flex-direction: column; height: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
-        .msg { background: #dcf8c6; padding: 10px; border-radius: 10px; margin-bottom: 10px; align-self: flex-end; max-width: 80%; }
-        .time { font-size: 10px; color: #777; margin-top: 5px; text-align: right; display: block; }
-        #input-area { display: flex; padding: 10px; background: #f0f0f0; border-top: 1px solid #ddd; }
-        input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
-        button { background: #075e54; color: white; border: none; padding: 10px 15px; border-radius: 20px; margin-left: 5px; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #e5ddd5; display: flex; justify-content: center; padding: 20px; }
+        #chat { width: 350px; background: white; border-radius: 10px; display: flex; flex-direction: column; height: 550px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; background: #efe7dd; }
+        .msg { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; align-self: flex-start; max-width: 80%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
+        .my-msg { background: #dcf8c6; align-self: flex-end; }
+        #input-area { display: flex; padding: 10px; background: #f0f0f0; }
+        input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; }
+        button { background: #075e54; color: white; border: none; padding: 10px 15px; border-radius: 50%; margin-left: 5px; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -19,46 +21,43 @@
         <div id="messages"></div>
         <div id="input-area">
             <input type="text" id="myInput" placeholder="መልክት ይጻፉ...">
-            <button onclick="send()">ላክ 🚀</button>
+            <button onclick="send()">➤</button>
         </div>
     </div>
 
     <script>
-        // 1. ገጹ ሲከፈት መልክቶችን ከሚሞሪ አውጣ
-        document.addEventListener("DOMContentLoaded", function() {
-            const saved = localStorage.getItem('myMessages');
-            if (saved) {
-                document.getElementById('messages').innerHTML = saved;
-                scrollToBottom();
-            }
-        });
+        // * ያገኘኸውን Firebase Config እዚህ ጋር ፔስት አድርግ *
+        const firebaseConfig = {
+            apiKey: "እዚህ ጋር ቀይረው",
+            authDomain: "my-chat-app-393d0.firebaseapp.com",
+            databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
+            projectId: "my-chat-app-393d0",
+            storageBucket: "my-chat-app-393d0.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("global_chats");
 
         function send() {
             var box = document.getElementById('myInput');
-            var list = document.getElementById('messages');
-            
             if(box.value.trim() !== "") {
-                var now = new Date();
-                var timeStr = now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
-                
-                // መልክቱን መፍጠር
-                var msgHtml = '<div class="msg">' + box.value + ' 😊<span class="time">' + timeStr + '</span></div>';
-                
-                // ወደ ገጹ ጨምር
-                list.innerHTML += msgHtml;
-                
-                // 2. አሁኑኑ ሚሞሪ (LocalStorage) ላይ ሴቭ አድርግ
-                localStorage.setItem('myMessages', list.innerHTML);
-                
+                db.push({
+                    text: box.value,
+                    sender: "me", // ለወደፊቱ ስም መቀየር ይቻላል
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
                 box.value = "";
-                scrollToBottom();
             }
         }
 
-        function scrollToBottom() {
+        db.on("child_added", function(snap) {
+            var m = snap.val();
             var list = document.getElementById('messages');
+            list.innerHTML += '<div class="msg">' + m.text + '<br><small style="font-size:8px; color:gray; float:right;">' + m.time + '</small></div>';
             list.scrollTop = list.scrollHeight;
-        }
+        });
     </script>
 </body>
 </html>
