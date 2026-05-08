@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="am">
 <head>
     <meta charset="UTF-8">
-    <title>Chat App</title>
+    <title>Chat Persistent</title>
     <style>
         body { font-family: sans-serif; background: #e5ddd5; display: flex; justify-content: center; padding: 20px; }
         #chat { width: 350px; background: white; border-radius: 10px; display: flex; flex-direction: column; height: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
-        .msg { background: #dcf8c6; padding: 10px; border-radius: 10px; margin-bottom: 10px; align-self: flex-end; position: relative; max-width: 80%; }
+        .msg { background: #dcf8c6; padding: 10px; border-radius: 10px; margin-bottom: 10px; align-self: flex-end; max-width: 80%; }
         .time { font-size: 10px; color: #777; margin-top: 5px; text-align: right; display: block; }
         #input-area { display: flex; padding: 10px; background: #f0f0f0; border-top: 1px solid #ddd; }
         input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
@@ -22,24 +22,43 @@
             <button onclick="send()">ላክ 🚀</button>
         </div>
     </div>
+
     <script>
+        // 1. ገጹ ሲከፈት መልክቶችን ከሚሞሪ አውጣ
+        document.addEventListener("DOMContentLoaded", function() {
+            const saved = localStorage.getItem('myMessages');
+            if (saved) {
+                document.getElementById('messages').innerHTML = saved;
+                scrollToBottom();
+            }
+        });
+
         function send() {
             var box = document.getElementById('myInput');
             var list = document.getElementById('messages');
+            
             if(box.value.trim() !== "") {
                 var now = new Date();
                 var timeStr = now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
                 
-                var div = document.createElement('div');
-                div.className = 'msg';
-                // እዚህ ጋር ጽሁፉን፣ ኢሞጂውን እና ሰዓቱን በአንድ ላይ ይይዛል
-                div.innerHTML = box.value + " 😊" + "<span class='time'>" + timeStr + "</span>";
+                // መልክቱን መፍጠር
+                var msgHtml = '<div class="msg">' + box.value + ' 😊<span class="time">' + timeStr + '</span></div>';
                 
-                list.appendChild(div);
+                // ወደ ገጹ ጨምር
+                list.innerHTML += msgHtml;
+                
+                // 2. አሁኑኑ ሚሞሪ (LocalStorage) ላይ ሴቭ አድርግ
+                localStorage.setItem('myMessages', list.innerHTML);
+                
                 box.value = "";
-                list.scrollTop = list.scrollHeight;
+                scrollToBottom();
             }
+        }
+
+        function scrollToBottom() {
+            var list = document.getElementById('messages');
+            list.scrollTop = list.scrollHeight;
         }
     </script>
 </body>
-</html> 
+</html>
