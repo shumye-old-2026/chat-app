@@ -3,95 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>የኔ ቻት አፕ</title>
+    <title>Final Chat App</title>
     <style>
-        /* 1. ዲዛይን (CSS) */
-        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        #chat-container { background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; overflow: hidden; display: flex; flex-direction: column; }
-        #messages { height: 400px; padding: 16px; overflow-y: scroll; display: flex; flex-direction: column; border-bottom: 1px solid #ddd; }
-        .message { padding: 8px 12px; margin: 5px; border-radius: 15px; max-width: 75%; word-wrap: break-word; position: relative; }
-        .sent { align-self: flex-end; background-color: #dcf8c6; }
-        .received { align-self: flex-start; background-color: #e4e6eb; }
-        
-        /* የሰዓት ዲዛይን */
-        .time { font-size: 0.65rem; color: #777; margin-top: 4px; text-align: right; display: block; }
-
-        #input-area { display: flex; padding: 10px; background: #f0f2f5; align-items: center; box-sizing: border-box; }
-        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; margin-right: 5px; min-width: 0; }
-        #userInput { width: 60px; max-width: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; margin-right: 5px; text-align: center; }
-        
-        /* የላክ ቁልፍ እንዳይቆረጥ */
-        #sendBtn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            font-weight: bold;
-        }
-        #sendBtn:hover { background-color: #0056b3; }
-        #emoji-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; margin-right: 5px; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { background: white; width: 350px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 450px; }
+        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; background: #e5ddd5; }
+        .msg { background: white; padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; max-width: 80%; align-self: flex-start; font-size: 14px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .sent { background: #dcf8c6; align-self: flex-end; }
+        .time { font-size: 10px; color: #888; display: block; text-align: right; margin-top: 4px; }
+        #input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 8px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        button { background: #0084ff; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-
     <div id="chat-container">
-        <div id="messages">
-            </div>
+        <div id="messages"></div>
         <div id="input-area">
-            <button id="emoji-btn">😊</button>
-            <input type="text" id="messageInput" placeholder="መልዕክት ይጻፉ...">
-            <input type="text" id="userInput" placeholder="Guest">
-            <button id="sendBtn">ላክ</button>
+            <input type="text" id="msgInput" placeholder="መልክት ይጻፉ...">
+            <button onclick="send()">ላክ</button>
         </div>
     </div>
-
     <script>
-    const messagesDiv = document.getElementById('messages');
-    const messageInput = document.getElementById('messageInput');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn'); // ቁልፉን እዚህ ጋር ይይዛል
-
-    // ሰዓቱን በትክክል የሚያወጣ ተግባር
-    function getCurrentTime() {
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12; 
-        return hours + ":" + minutes + " " + ampm;
-    }
-
-    // መልዕክት የሚልከው ተግባር
-    function sendMessage() {
-    const text = messageInput.value.trim();
-    const user = userInput.value.trim() || 'Guest';
-    
-    // ሰዓቱን ለማውጣት
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    if (text !== "") {
-        const messageHtml = 
-            <div class="message sent">
-                <b>${user}:</b> ${text} 
-                <span style="font-size: 0.7rem; color: gray; margin-left: 10px;">${time}</span>
-            </div>;
-        messagesDiv.innerHTML += messageHtml;
-        messageInput.value = ""; 
-        messagesDiv.scrollTop = messagesDiv.scrollHeight; 
-    }
-}
-
-    // ቁልፉ ሲጫን እንዲሰራ ማድረግ (ይህ በጣም አስፈላጊ ነው)
-    sendBtn.addEventListener('click', sendMessage);
-
-    // በ 'Enter' ቁልፍ እንዲሰራም መጨመር
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-</script>
+        function send() {
+            const input = document.getElementById('msgInput');
+            const messages = document.getElementById('messages');
+            if (input.value.trim() !== "") {
+                const now = new Date();
+                const time = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
+                messages.innerHTML += <div class="msg sent">${input.value}<span class="time">${time}</span></div>;
+                input.value = "";
+                messages.scrollTop = messages.scrollHeight;
+            }
+        }
+    </script>
 </body>
 </html>
