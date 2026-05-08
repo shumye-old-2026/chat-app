@@ -5,72 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shumye Delivery</title>
     <style>
+    /* አጠቃላይ ገጽታ */
     body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
         background-color: #f0f2f5; 
         display: flex; 
         justify-content: center; 
-        padding: 10px; 
+        padding: 15px; 
         margin: 0;
+        color: #333;
     }
+
+    /* ዋናው ሳጥን - ስክሪኑ እንዳይጠበብ የተስተካከለ */
     .container { 
         background: white; 
-        padding: 20px; 
-        border-radius: 15px; 
-        box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
+        padding: 25px; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         width: 100%; 
-        max-width: 450px; /* ስክሪኑ እንዳይጠበብ ይረዳዋል */
+        max-width: 480px; /* ለትላልቅ ስልኮችም እንዲመች */
         box-sizing: border-box;
     }
+
+    /* የላይኛው ርዕስ */
     .header { 
-        background: linear-gradient(135deg, #4a90e2, #357abd); 
+        background: linear-gradient(135deg, #007bff, #0056b3); 
         color: white; 
-        padding: 20px; 
+        padding: 25px; 
         text-align: center; 
-        border-radius: 10px; 
+        border-radius: 15px; 
         font-weight: bold; 
-        font-size: 22px;
-        margin-bottom: 20px; 
+        font-size: 24px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0,123,255,0.2);
     }
+
+    /* መረጃ መሙያ ሳጥኖች */
     input, textarea { 
         width: 100%; 
-        padding: 14px; 
-        margin-bottom: 12px; 
-        border: 1px solid #ddd; 
-        border-radius: 10px; 
+        padding: 15px; 
+        margin-bottom: 15px; 
+        border: 2px solid #eee; 
+        border-radius: 12px; 
         box-sizing: border-box; 
         font-size: 16px;
+        transition: border-color 0.3s;
+        outline: none;
     }
+
+    input:focus, textarea:focus {
+        border-color: #007bff;
+    }
+
+    textarea {
+        height: 100px;
+        resize: none;
+    }
+
+    /* መላኪያ ቁልፍ */
     button { 
         width: 100%; 
-        padding: 16px; 
+        padding: 18px; 
         background: #28a745; 
         color: white; 
         border: none; 
-        border-radius: 10px; 
+        border-radius: 12px; 
         font-weight: bold; 
         font-size: 18px;
         cursor: pointer; 
-        transition: 0.3s;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(40,167,69,0.2);
     }
+
     button:hover { 
         background: #218838; 
+        transform: translateY(-1px);
     }
+
+    button:active {
+        transform: translateY(1px);
+    }
+
+    /* የትዕዛዞች ዝርዝር */
     .orders-list { 
-        margin-top: 25px; 
-        border-top: 2px solid #f0f0f0; 
-        padding-top: 15px; 
+        margin-top: 30px; 
+        border-top: 2px solid #f8f9fa; 
+        padding-top: 20px; 
     }
+
     .order-card { 
         background: #ffffff; 
-        padding: 15px; 
-        border-left: 5px solid #4a90e2; 
-        margin-bottom: 10px; 
-        border-radius: 8px; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        padding: 18px; 
+        border-left: 6px solid #007bff; 
+        margin-bottom: 15px; 
+        border-radius: 12px; 
+        box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        position: relative;
     }
-    .order-card strong { color: #333; font-size: 17px; }
-    .order-card small { color: #666; display: block; margin-top: 5px; }
+
+    .order-card strong { 
+        color: #222; 
+        font-size: 18px; 
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .order-card p {
+        margin: 5px 0;
+        font-size: 15px;
+        color: #555;
+    }
+
+    .order-card .status-tag { 
+        display: inline-block;
+        margin-top: 8px;
+        padding: 4px 10px;
+        background: #e7f3ff;
+        color: #007bff;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .order-card .order-time {
+        float: right;
+        font-size: 12px;
+        color: #bbb;
+    }
 </style>
     
     
