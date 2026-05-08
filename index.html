@@ -1,63 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="am">
 <head>
     <meta charset="UTF-8">
-    <title>Global Real-time Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shumye Delivery Service</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #e5ddd5; display: flex; justify-content: center; padding: 20px; }
-        #chat { width: 350px; background: white; border-radius: 10px; display: flex; flex-direction: column; height: 550px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); overflow: hidden; }
-        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; background: #efe7dd; }
-        .msg { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; align-self: flex-start; max-width: 80%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
-        .my-msg { background: #dcf8c6; align-self: flex-end; }
-        #input-area { display: flex; padding: 10px; background: #f0f0f0; }
-        input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; }
-        button { background: #075e54; color: white; border: none; padding: 10px 15px; border-radius: 50%; margin-left: 5px; cursor: pointer; font-size: 18px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 10px; }
+        .container { max-width: 450px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; }
+        
+        /* Order Form */
+        .order-form { padding: 20px; border-bottom: 2px solid #f0f0f0; background: #fff; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #218838; }
+
+        /* Orders List */
+        .orders-list { padding: 15px; height: 300px; overflow-y: auto; background: #fafafa; }
+        .order-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .order-card h4 { margin: 0 0 5px 0; color: #333; }
+        .order-card p { margin: 3px 0; font-size: 13px; color: #666; }
+        .status { display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 11px; background: #e1f0ff; color: #007bff; font-weight: bold; }
+        .time { float: right; font-size: 11px; color: #999; }
     </style>
 </head>
 <body>
-    <div id="chat">
-        <div id="messages"></div>
-        <div id="input-area">
-            <input type="text" id="myInput" placeholder="መልክት ይጻፉ...">
-            <button onclick="send()">➤</button>
-        </div>
+
+<div class="container">
+    <div class="header">Shumye Delivery 🚚</div>
+    
+    <div class="order-form">
+        <input type="text" id="custName" placeholder="የእርስዎ ስም">
+        <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
+        <textarea id="orderDetail" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ..."></textarea>
+        <button onclick="sendOrder()">ትዕዛዝ ላክ 🚀</button>
     </div>
 
-    <script>
-        // * ያገኘኸውን Firebase Config እዚህ ጋር ፔስት አድርግ *
-        const firebaseConfig = {
-            apiKey: "እዚህ ጋር ቀይረው",
-            authDomain: "my-chat-app-393d0.firebaseapp.com",
-            databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
-            projectId: "my-chat-app-393d0",
-            storageBucket: "my-chat-app-393d0.appspot.com",
-            messagingSenderId: "...",
-            appId: "..."
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("global_chats");
+    <div class="orders-list" id="orders">
+        <p style="text-align: center; color: #999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
+    </div>
+</div>
 
-        function send() {
-            var box = document.getElementById('myInput');
-            if(box.value.trim() !== "") {
-                db.push({
-                    text: box.value,
-                    sender: "me", // ለወደፊቱ ስም መቀየር ይቻላል
-                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                });
-                box.value = "";
-            }
+<script>
+    // 1. ያንተን Firebase Config እዚህ ጋር ተካ
+    const firebaseConfig = {
+        apiKey: "AIza...",
+        authDomain: "my-chat-app-393d0.firebaseapp.com",
+        databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
+        projectId: "my-chat-app-393d0",
+        storageBucket: "my-chat-app-393d0.appspot.com",
+        messagingSenderId: "...",
+        appId: "..."
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database().ref("delivery_orders");
+
+    // ትዕዛዝ ለመላክ
+    function sendOrder() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        const detail = document.getElementById('orderDetail').value;
+
+        if(name && phone && detail) {
+            db.push({
+                customer: name,
+                phone: phone,
+                item: detail,
+                status: "በሂደት ላይ",
+                time: new Date().toLocaleTimeString()
+            });
+            
+            // ፎርሙን ባዶ ማድረግ
+            document.getElementById('custName').value = "";
+            document.getElementById('custPhone').value = "";
+            document.getElementById('orderDetail').value = "";
+            alert("ትዕዛዝዎ ተልኳል!");
+        } else {
+            alert("እባክዎ ሁሉንም መረጃ ይሙሉ");
         }
+    }
 
-        db.on("child_added", function(snap) {
-            var m = snap.val();
-            var list = document.getElementById('messages');
-            list.innerHTML += '<div class="msg">' + m.text + '<br><small style="font-size:8px; color:gray; float:right;">' + m.time + '</small></div>';
-            list.scrollTop = list.scrollHeight;
-        });
-    </script>
+    // ትዕዛዞችን በሪል-ታይም ለማሳየት
+    db.on("child_added", function(snapshot) {
+        const o = snapshot.val();
+        const list = document.getElementById('orders');
+        
+        // የመጀመሪያውን የሰላምታ ጽሁፍ ለማጥፋት
+        if (list.innerHTML.includes("ትዕዛዞች እዚህ ይዘረዘራሉ")) list.innerHTML = ""; const card = 
+            <div class="order-card">
+                <span class="time">${o.time}</span>
+                <h4>${o.customer}</h4>
+                <p>📞 ${o.phone}</p>
+                <p>📦 ${o.item}</p>
+                <span class="status">${o.status}</span>
+            </div>
+        ;
+        list.innerHTML = card + list.innerHTML;
+    });
+</script>
+
 </body>
 </html>
