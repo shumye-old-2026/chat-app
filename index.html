@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat App Fix</title>
+    <title>Chat Fix</title>
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #chat-box { width: 350px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 450px; }
-        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; background: #e5ddd5; }
-        .msg { background: white; padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; align-self: flex-start; font-size: 14px; position: relative; }
-        .sent { background: #dcf8c6; align-self: flex-end; }
-        .time { font-size: 10px; color: #888; margin-left: 10px; }
-        #input-area { padding: 10px; border-top: 1px solid #ddd; display: flex; background: #f0f0f0; }
-        input { flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 8px 15px; outline: none; }
-        button { background: #007bff; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; margin-left: 5px; cursor: pointer; font-size: 12px; }
+        body { font-family: sans-serif; background: #e5ddd5; display: flex; justify-content: center; padding: 20px; }
+        #chat { width: 350px; background: white; border-radius: 10px; display: flex; flex-direction: column; height: 450px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
+        .msg { background: #dcf8c6; padding: 10px; border-radius: 10px; margin-bottom: 10px; align-self: flex-end; }
+        #input-area { display: flex; padding: 10px; background: #f0f0f0; border-top: 1px solid #ddd; }
+        input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
+        button { background: #075e54; color: white; border: none; padding: 10px 15px; border-radius: 20px; margin-left: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div id="chat-box">
+    <div id="chat">
         <div id="messages"></div>
         <div id="input-area">
             <input type="text" id="myInput" placeholder="መልክት ይጻፉ...">
-            <button onclick="sendMsg()">ላክ</button>
+            <button onclick="send()">ላክ</button>
         </div>
     </div>
     <script>
-        function sendMsg() {
-            const input = document.getElementById('myInput');
-            const container = document.getElementById('messages');
-            if(input.value.trim() !== "") {
-                const now = new Date();
-                const time = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
-                container.innerHTML += <div class="msg sent">${input.value} <span class="time">${time}</span></div>;
-                input.value = "";
-                container.scrollTop = container.scrollHeight;
+        function send() {
+            var box = document.getElementById('myInput');
+            var list = document.getElementById('messages');
+            if(box.value.trim() !== "") {
+                var div = document.createElement('div');
+                div.className = 'msg';
+                div.innerText = box.value;
+                list.appendChild(div);
+                box.value = "";
+                list.scrollTop = list.scrollHeight;
             }
         }
     </script>
