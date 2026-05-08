@@ -11,14 +11,14 @@
         .container { max-width: 450px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
         .header { background: #007bff; color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; }
         
-        /* Order Form */
+        /* Order Form Style */
         .order-form { padding: 20px; border-bottom: 2px solid #f0f0f0; background: #fff; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        button { width: 100%; background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #218838; }
+        button { width: 100%; background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #218838; transform: scale(1.02); }
 
-        /* Orders List */
-        .orders-list { padding: 15px; height: 300px; overflow-y: auto; background: #fafafa; }
+        /* Orders List Style */
+        .orders-list { padding: 15px; height: 350px; overflow-y: auto; background: #fafafa; }
         .order-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .order-card h4 { margin: 0 0 5px 0; color: #333; }
         .order-card p { margin: 3px 0; font-size: 13px; color: #666; }
@@ -34,33 +34,32 @@
     <div class="order-form">
         <input type="text" id="custName" placeholder="የእርስዎ ስም">
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
-        <textarea id="orderDetail" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ..."></textarea>
+        <textarea id="orderDetail" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ (ለምሳሌ፡ 1 ፒዛ ቦሌ ሚካኤል)..."></textarea>
         <button onclick="sendOrder()">ትዕዛዝ ላክ 🚀</button>
     </div>
 
     <div class="orders-list" id="orders">
-        <p style="text-align: center; color: #999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
+        <p id="empty-msg" style="text-align: center; color: #999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
     </div>
 </div>
 
 <script>
-    // ************
-    // * ካንተ ምስል (image_8.png) የተወሰደ ትክክለኛ መረጃ *
-    // ************
+    // ያንተ ትክክለኛ የFirebase መታወቂያዎች (ከፎቶህ የተወሰዱ)
     const firebaseConfig = {
-      apiKey: "AIzaSyBVwvrXBIyaIISyUFF2NyLFBq_mmcvaPCc",
-      authDomain: "my-chat-app-393d0.firebaseapp.com",
-      databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
-      projectId: "my-chat-app-393d0",
-      storageBucket: "my-chat-app-393d0.appspot.com",
-      messagingSenderId: "836061447359",
-      appId: "1:836061447359:web:9a071fb5931ad8b50e320a"
+        apiKey: "AIzaSyBVwvrXBIyaIISyUFF2NyLFBq_mmcvaPCc",
+        authDomain: "my-chat-app-393d0.firebaseapp.com",
+        databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
+        projectId: "my-chat-app-393d0",
+        storageBucket: "my-chat-app-393d0.appspot.com",
+        messagingSenderId: "836061447359",
+        appId: "1:836061447359:web:9a071fb5931ad8b50e320a"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref("delivery_orders");
 
-    // ትዕዛዝ ለመላክ
+    // ትዕዛዝ ወደ Firebase ለመላክ
     function sendOrder() {
         const name = document.getElementById('custName').value;
         const phone = document.getElementById('custPhone').value;
@@ -73,22 +72,26 @@
                 item: detail,
                 status: "በሂደት ላይ",
                 time: new Date().toLocaleTimeString()
+            }).then(() => {
+                // ፎርሙን ባዶ ማድረግ
+                document.getElementById('custName').value = "";
+                document.getElementById('custPhone').value = ""; document.getElementById('orderDetail').value = "";
+                alert("ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!");
+            }).catch((error) => {
+                alert("ስህተት ተፈጥሯል፦ " + error.message);
             });
-            
-            // ፎርሙን ባዶ ማድረግ
-            document.getElementById('custName').value = "";
-            document.getElementById('custPhone').value = "";
-            document.getElementById('orderDetail').value = "";
-            alert("ትዕዛዝዎ ተልኳል!");
         } else {
             alert("እባክዎ ሁሉንም መረጃ ይሙሉ");
         }
-    } // ትዕዛዞችን በሪል-ታይም ለማሳየት
+    }
+
+    // አዳዲስ ትዕዛዞችን ከዳታቤዝ አምጥቶ ለማሳየት
     db.on("child_added", function(snapshot) {
         const o = snapshot.val();
         const list = document.getElementById('orders');
+        const emptyMsg = document.getElementById('empty-msg');
         
-        if (list.innerHTML.includes("ትዕዛዞች እዚህ ይዘረዘራሉ")) list.innerHTML = "";
+        if (emptyMsg) emptyMsg.remove();
 
         const card = 
             <div class="order-card">
