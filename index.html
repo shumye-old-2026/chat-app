@@ -73,8 +73,7 @@
         // ትዕዛዞችን ከስር መዘርዘር (ይህ ክፍል ነው የጠፋው)
         const listDiv = document.getElementById("list");
         onValue(ordersRef, (snapshot) => {
-            listDiv.innerHTML = "";
-[5/9/2026 2:30 AM] Shumyetadesse Asefa: const data = snapshot.val();
+            listDiv.innerHTML = ""; const data = snapshot.val();
             if(data) {
                 Object.values(data).reverse().forEach(order => {
                     listDiv.innerHTML += 
