@@ -44,15 +44,17 @@
 </div>
 
 <script>
-    // 1. ያንተን Firebase Config እዚህ ጋር ተካ
+    // ************
+    // * ካንተ ምስል (image_8.png) የተወሰደ ትክክለኛ መረጃ *
+    // ************
     const firebaseConfig = {
-        apiKey: "AIza...",
-        authDomain: "my-chat-app-393d0.firebaseapp.com",
-        databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
-        projectId: "my-chat-app-393d0",
-        storageBucket: "my-chat-app-393d0.appspot.com",
-        messagingSenderId: "...",
-        appId: "..."
+      apiKey: "AIzaSyBVwvrXBIyaIISyUFF2NyLFBq_mmcvaPCc",
+      authDomain: "my-chat-app-393d0.firebaseapp.com",
+      databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
+      projectId: "my-chat-app-393d0",
+      storageBucket: "my-chat-app-393d0.appspot.com",
+      messagingSenderId: "836061447359",
+      appId: "1:836061447359:web:9a071fb5931ad8b50e320a"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -81,29 +83,14 @@
         } else {
             alert("እባክዎ ሁሉንም መረጃ ይሙሉ");
         }
-    }
-
-    // ትዕዛዞችን በሪል-ታይም ለማሳየት
+    } // ትዕዛዞችን በሪል-ታይም ለማሳየት
     db.on("child_added", function(snapshot) {
         const o = snapshot.val();
         const list = document.getElementById('orders');
         
-        // የመጀመሪያውን የሰላምታ ጽሁፍ ለማጥፋት
-        if (list.innerHTML.includes("ትዕዛዞች እዚህ ይዘረዘራሉ")) list.innerHTML = ""; const card = 
-            <div class="order-card">
-                <span class="time">${o.time}</span>
-                <h4>${o.customer}</h4>
-                <p>📞 ${o.phone}</p>
-                <p>📦 ${o.item}</p>
-                <span class="status">${o.status}</span>
-            </div>
-        ;
-        list.innerHTML = card + list.innerHTML;
-    });
-</script>
+        if (list.innerHTML.includes("ትዕዛዞች እዚህ ይዘረዘራሉ")) list.innerHTML = "";
 
-</body>
-</html> const card = 
+        const card = 
             <div class="order-card">
                 <span class="time">${o.time}</span>
                 <h4>${o.customer}</h4>
