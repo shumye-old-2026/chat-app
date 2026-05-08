@@ -10,16 +10,13 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 10px; }
         .container { max-width: 450px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
         .header { background: #007bff; color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; }
-        
-        /* Order Form Style */
         .order-form { padding: 20px; border-bottom: 2px solid #f0f0f0; background: #fff; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
         button { width: 100%; background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #218838; transform: scale(1.02); }
-
-        /* Orders List Style */
+        button:hover { background: #218838; transform: scale(1.01); }
         .orders-list { padding: 15px; height: 350px; overflow-y: auto; background: #fafafa; }
-        .order-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .order-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .order-card h4 { margin: 0 0 5px 0; color: #333; }
         .order-card p { margin: 3px 0; font-size: 13px; color: #666; }
         .status { display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 11px; background: #e1f0ff; color: #007bff; font-weight: bold; }
@@ -30,21 +27,19 @@
 
 <div class="container">
     <div class="header">Shumye Delivery 🚚</div>
-    
     <div class="order-form">
         <input type="text" id="custName" placeholder="የእርስዎ ስም">
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
         <textarea id="orderDetail" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ (ለምሳሌ፡ 1 ፒዛ ቦሌ ሚካኤል)..."></textarea>
         <button onclick="sendOrder()">ትዕዛዝ ላክ 🚀</button>
     </div>
-
     <div class="orders-list" id="orders">
         <p id="empty-msg" style="text-align: center; color: #999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
     </div>
 </div>
 
 <script>
-    // ያንተ ትክክለኛ የFirebase መታወቂያዎች (ከፎቶህ የተወሰዱ)
+    // ያንተ ትክክለኛ የFirebase መታወቂያዎች [ከምስል b0eee15d የተወሰደ]
     const firebaseConfig = {
         apiKey: "AIzaSyBVwvrXBIyaIISyUFF2NyLFBq_mmcvaPCc",
         authDomain: "my-chat-app-393d0.firebaseapp.com",
@@ -55,11 +50,9 @@
         appId: "1:836061447359:web:9a071fb5931ad8b50e320a"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref("delivery_orders");
 
-    // ትዕዛዝ ወደ Firebase ለመላክ
     function sendOrder() {
         const name = document.getElementById('custName').value;
         const phone = document.getElementById('custPhone').value;
@@ -70,27 +63,21 @@
                 customer: name,
                 phone: phone,
                 item: detail,
-                status: "በሂደት ላይ",
+                status: "ተልኳል",
                 time: new Date().toLocaleTimeString()
             }).then(() => {
-                // ፎርሙን ባዶ ማድረግ
                 document.getElementById('custName').value = "";
-                document.getElementById('custPhone').value = ""; document.getElementById('orderDetail').value = "";
+                document.getElementById('custPhone').value = "";
+                document.getElementById('orderDetail').value = "";
                 alert("ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!");
-            }).catch((error) => {
-                alert("ስህተት ተፈጥሯል፦ " + error.message);
-            });
+            }).catch((e) => alert("ስህተት: " + e.message));
         } else {
             alert("እባክዎ ሁሉንም መረጃ ይሙሉ");
         }
-    }
-
-    // አዳዲስ ትዕዛዞችን ከዳታቤዝ አምጥቶ ለማሳየት
-    db.on("child_added", function(snapshot) {
+    } db.on("child_added", function(snapshot) {
         const o = snapshot.val();
         const list = document.getElementById('orders');
         const emptyMsg = document.getElementById('empty-msg');
-        
         if (emptyMsg) emptyMsg.remove();
 
         const card = 
@@ -105,6 +92,5 @@
         list.innerHTML = card + list.innerHTML;
     });
 </script>
-
 </body>
 </html>
