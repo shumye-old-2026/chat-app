@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="am">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,7 @@
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
         <textarea id="item" placeholder="የሚፈልጉት ዕቃ..."></textarea>
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
-        <div id="list" class="orders-list"></div>
+        <div id="orderContainer" class="orders-list"></div>
     </div>
 
     <script type="module">
@@ -55,24 +55,23 @@
             }
         };
 
-        const listDiv = document.getElementById("list");
+        const orderContainer = document.getElementById("orderContainer");
         onValue(ordersRef, (snapshot) => {
-            listDiv.innerHTML = "";
+            orderContainer.innerHTML = "";
             const data = snapshot.val();
             if(data) {
                 Object.entries(data).reverse().forEach(([id, order]) => {
                     const card = document.createElement("div");
                     card.className = "order-card";
                     let color = order.status === "በመጠባበቅ ላይ" ? "orange" : "green";
-                    card.innerHTML = `
-                        <strong>👤 ${order.name}</strong><br>
-                        <small>📞 ${order.phone}</small><br>
-[5/9/2026 11:18 AM] Shumyetadesse Asefa: <p>📦 ${order.item}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="color:${color}; font-weight:bold;">● ${order.status}</span>
-                            ${order.status === "በመጠባበቅ ላይ" ? <button onclick="changeStatus('${id}')" style="width:auto; padding:5px 10px; font-size:12px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;">ጨርሻለሁ</button> : ""}
-                        </div>`;
-                    listDiv.appendChild(card);
+                    card.innerHTML = "<strong>👤 " + order.name + "</strong><br>" +
+                                   "<small>📞 " + order.phone + "</small><br>" +
+                                   "<p>📦 " + order.item + "</p>" +
+                                   "<div style='display:flex; justify-content:space-between;'>" +
+                                   "<span style='color:" + color + "'>" + order.status + "</span>" +
+                                   (order.status === "በመጠባበቅ ላይ" ? "<button onclick=\"window.changeStatus('" + id + "')\" style='width:auto; padding:5px;'>ጨርሻለሁ</button>" : "") +
+                                   "</div>";
+                    orderContainer.appendChild(card);
                 });
             }
         });
