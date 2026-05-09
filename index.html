@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="am">
 <head>
     <meta charset="UTF-8">
@@ -19,17 +19,14 @@
         <div class="header">Shumye Delivery 🚚</div>
         <input type="text" id="custName" placeholder="የእርስዎ ስም">
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
-        <textarea id="item" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ..."></textarea>
+        <textarea id="item" placeholder="የሚፈልጉት ዕቃ..."></textarea>
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
-
-        <div class="orders-list" id="list">
-            <p style="text-align:center; color:#999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
-        </div>
+        <div id="list" class="orders-list"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBVwvrXBlyaIISyUFf2NyLFBq_mmcvaPCc",
@@ -45,53 +42,42 @@
         const db = getDatabase(app);
         const ordersRef = ref(db, "orders");
 
-        // ትዕዛዝ መላክ
-        document.getElementById("sendBtn").onclick = function() {
+        document.getElementById("sendBtn").onclick = () => {
             const name = document.getElementById("custName").value;
             const phone = document.getElementById("custPhone").value;
             const item = document.getElementById("item").value;
-
             if(name && phone && item) {
-                push(ordersRef, {
-                    name: name,
-                    phone: phone,
-                    item: item,
-                    status: "በመጠባበቅ ላይ",
-                    time: new Date().toLocaleTimeString()
-                }).then(() => {
-                    alert("ትዕዛዝዎ ተልኳል! ✅");
-                    document.getElementById("custName").value = "";
-                    document.getElementById("custPhone").value = "";
-                    document.getElementById("item").value = "";
-                });
-            } else {
-                alert("እባክዎ ሁሉንም መረጃ ይሙሉ!");
+                push(ordersRef, { name, phone, item, status: "በመጠባበቅ ላይ", time: new Date().toLocaleTimeString() });
+                alert("ትዕዛዝ ተልኳል!");
+                document.getElementById("custName").value = "";
+                document.getElementById("custPhone").value = "";
+                document.getElementById("item").value = "";
             }
         };
 
-        // ትዕዛዞችን ማሳየት
         const listDiv = document.getElementById("list");
         onValue(ordersRef, (snapshot) => {
             listDiv.innerHTML = "";
             const data = snapshot.val();
             if(data) {
-                Object.values(data).reverse().forEach(order => {let statusColor = order.status === "በመጠባበቅ ላይ" ? "#f39c12" : "#27ae60";
-                    
-                    listDiv.innerHTML += 
-                        <div class="order-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <strong>👤 ${order.name}</strong>
-                                <span style="color:${statusColor}; font-weight:bold; font-size:12px;">● ${order.status}</span>
-                            </div>
-                            <p>📞 ${order.phone}</p>
-                            <p>📦 ${order.item}</p>
-                            <small style="color:#999">⏰ ${order.time}</small>
-                        </div>;
+                Object.entries(data).reverse().forEach(([id, order]) => {
+                    const card = document.createElement("div");
+                    card.className = "order-card";
+                    let color = order.status === "በመጠባበቅ ላይ" ? "orange" : "green";
+                    card.innerHTML = `
+                        <strong>👤 ${order.name}</strong><br>
+                        <small>📞 ${order.phone}</small><br>
+[5/9/2026 11:18 AM] Shumyetadesse Asefa: <p>📦 ${order.item}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="color:${color}; font-weight:bold;">● ${order.status}</span>
+                            ${order.status === "በመጠባበቅ ላይ" ? <button onclick="changeStatus('${id}')" style="width:auto; padding:5px 10px; font-size:12px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;">ጨርሻለሁ</button> : ""}
+                        </div>`;
+                    listDiv.appendChild(card);
                 });
-            } else {
-                listDiv.innerHTML = "<p style='text-align:center; color:#999;'>ምንም ትዕዛዝ የለም</p>";
             }
         });
+
+        window.changeStatus = (id) => update(ref(db, 'orders/' + id), { status: "ተጠናቋል" });
     </script>
 </body>
 </html>
