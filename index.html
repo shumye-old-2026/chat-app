@@ -21,7 +21,8 @@
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
         <textarea id="item" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ..."></textarea>
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
-        <div id="list" class="orders-list">
+
+        <div class="orders-list" id="list">
             <p style="text-align:center; color:#999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
         </div>
     </div>
@@ -44,33 +45,48 @@
         const db = getDatabase(app);
         const ordersRef = ref(db, "orders");
 
+        // ትዕዛዝ መላክ
         document.getElementById("sendBtn").onclick = function() {
             const name = document.getElementById("custName").value;
             const phone = document.getElementById("custPhone").value;
             const item = document.getElementById("item").value;
+
             if(name && phone && item) {
-                push(ordersRef, { name, phone, item, time: new Date().toLocaleTimeString() });
-                alert("ትዕዛዝ ተልኳል! ✅");
-                document.getElementById("custName").value = "";
-                document.getElementById("custPhone").value = "";
-                document.getElementById("item").value = "";
+                push(ordersRef, {
+                    name: name,
+                    phone: phone,
+                    item: item,
+                    status: "በመጠባበቅ ላይ",
+                    time: new Date().toLocaleTimeString()
+                }).then(() => {
+                    alert("ትዕዛዝዎ ተልኳል! ✅");
+                    document.getElementById("custName").value = "";
+                    document.getElementById("custPhone").value = "";
+                    document.getElementById("item").value = "";
+                });
+            } else {
+                alert("እባክዎ ሁሉንም መረጃ ይሙሉ!");
             }
         };
 
+        // ትዕዛዞችን ማሳየት
         const listDiv = document.getElementById("list");
         onValue(ordersRef, (snapshot) => {
             listDiv.innerHTML = "";
             const data = snapshot.val();
             if(data) {
-                Object.values(data).reverse().forEach(order => {
-                    const card = document.createElement("div");
-                    card.className = "order-card";
-                    card.innerHTML = `
-                        <strong>👤 ${order.name}</strong>
-                        <p>📞 ${order.phone}</p><p>📦 ${order.item}</p>
-                        <small style="color:#999">⏰ ${order.time}</small>
-                    `;
-                    listDiv.appendChild(card);
+                Object.values(data).reverse().forEach(order => {let statusColor = order.status === "በመጠባበቅ ላይ" ? "#f39c12" : "#27ae60";
+                    
+                    listDiv.innerHTML += 
+                        <div class="order-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong>👤 ${order.name}</strong>
+                                <span style="color:${statusColor}; font-weight:bold; font-size:12px;">● ${order.status}</span>
+                            </div>
+                            <p>📞 ${order.phone}</p>
+                            <p>📦 ${order.item}</p>
+                            <small style="color:#999">⏰ ${order.time}</small>
+                        </div>;
                 });
             } else {
                 listDiv.innerHTML = "<p style='text-align:center; color:#999;'>ምንም ትዕዛዝ የለም</p>";
