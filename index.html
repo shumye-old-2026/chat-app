@@ -12,8 +12,6 @@
         button { width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer; }
         .orders-list { margin-top: 25px; border-top: 2px solid #eee; padding-top: 15px; }
         .order-card { background: #fff; padding: 15px; border-left: 5px solid #007bff; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; }
-        .order-card strong { display: block; font-size: 17px; margin-bottom: 5px; color: #333; }
-        .order-card p { margin: 5px 0; color: #555; }
     </style>
 </head>
 <body>
@@ -23,8 +21,7 @@
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
         <textarea id="item" placeholder="የሚፈልጉት ዕቃ እና መድረሻ ቦታ..."></textarea>
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
-
-        <div class="orders-list" id="list">
+        <div id="list" class="orders-list">
             <p style="text-align:center; color:#999;">ትዕዛዞች እዚህ ይዘረዘራሉ...</p>
         </div>
     </div>
@@ -47,43 +44,33 @@
         const db = getDatabase(app);
         const ordersRef = ref(db, "orders");
 
-        // ትዕዛዝ መላክ
         document.getElementById("sendBtn").onclick = function() {
             const name = document.getElementById("custName").value;
             const phone = document.getElementById("custPhone").value;
             const item = document.getElementById("item").value;
-
             if(name && phone && item) {
-                push(ordersRef, {
-                    name: name,
-                    phone: phone,
-                    item: item,
-                    time: new Date().toLocaleTimeString()
-                }).then(() => {
-                    alert("ትዕዛዝዎ ተልኳል! ✅");
-                    document.getElementById("custName").value = "";
-                    document.getElementById("custPhone").value = "";
-                    document.getElementById("item").value = "";
-                });
-            } else {
-                alert("እባክዎ ሁሉንም መረጃ ይሙሉ!");
+                push(ordersRef, { name, phone, item, time: new Date().toLocaleTimeString() });
+                alert("ትዕዛዝ ተልኳል! ✅");
+                document.getElementById("custName").value = "";
+                document.getElementById("custPhone").value = "";
+                document.getElementById("item").value = "";
             }
         };
 
-        // ትዕዛዞችን ከስር መዘርዘር (ዋናው ክፍል)
         const listDiv = document.getElementById("list");
-        onValue(ordersRef, (snapshot) => {listDiv.innerHTML = ""; // የድሮውን አጽዳ
+        onValue(ordersRef, (snapshot) => {
+            listDiv.innerHTML = "";
             const data = snapshot.val();
             if(data) {
-                // መረጃውን ወደ Array ቀይረን ተገልብጦ (አዲሱ ላይ እንዲሆን) እናሳያለን
                 Object.values(data).reverse().forEach(order => {
-                    listDiv.innerHTML += 
-                        <div class="order-card">
-                            <strong>👤 ስም፡ ${order.name}</strong>
-                            <p>📞 ስልክ፡ ${order.phone}</p>
-                            <p>📦 ዕቃ፡ ${order.item}</p>
-                            <p style="font-size:12px; color:#999;">⏰ ሰዓት፡ ${order.time}</p>
-                        </div>;
+                    const card = document.createElement("div");
+                    card.className = "order-card";
+                    card.innerHTML = `
+                        <strong>👤 ${order.name}</strong>
+                        <p>📞 ${order.phone}</p><p>📦 ${order.item}</p>
+                        <small style="color:#999">⏰ ${order.time}</small>
+                    `;
+                    listDiv.appendChild(card);
                 });
             } else {
                 listDiv.innerHTML = "<p style='text-align:center; color:#999;'>ምንም ትዕዛዝ የለም</p>";
@@ -91,4 +78,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
