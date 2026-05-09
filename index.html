@@ -48,7 +48,7 @@
             const item = document.getElementById("item").value;
             if(name && phone && item) {
                 push(ordersRef, { name, phone, item, status: "በመጠባበቅ ላይ", time: new Date().toLocaleTimeString() });
-                alert("ትዕዛዝ ተልኳል!");
+                alert("ትዕዛዝ ተልኳል! ✅");
                 document.getElementById("custName").value = "";
                 document.getElementById("custPhone").value = "";
                 document.getElementById("item").value = "";
@@ -63,14 +63,20 @@
                 Object.entries(data).reverse().forEach(([id, order]) => {
                     const card = document.createElement("div");
                     card.className = "order-card";
-                    let color = order.status === "በመጠባበቅ ላይ" ? "orange" : "green";
-                    card.innerHTML = "<strong>👤 " + order.name + "</strong><br>" +
-                                   "<small>📞 " + order.phone + "</small><br>" +
-                                   "<p>📦 " + order.item + "</p>" +
-                                   "<div style='display:flex; justify-content:space-between;'>" +
-                                   "<span style='color:" + color + "'>" + order.status + "</span>" +
-                                   (order.status === "በመጠባበቅ ላይ" ? "<button onclick=\"window.changeStatus('" + id + "')\" style='width:auto; padding:5px;'>ጨርሻለሁ</button>" : "") +
-                                   "</div>";
+                    const statusText = order.status || "በመጠባበቅ ላይ";
+                    const statusColor = statusText === "በመጠባበቅ ላይ" ? "#f39c12" : "#27ae60";`
+                    card.innerHTML = 
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong>👤 ${order.name}</strong>
+                            <span style="color:${statusColor}; font-weight:bold; font-size:12px;">● ${statusText}</span>
+                        </div>
+                        <p>📞 ${order.phone}</p>
+                        <p>📦 ${order.item}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <small style="color:#999">⏰ ${order.time || '---'}</small>
+                            ${statusText === "በመጠባበቅ ላይ" ? <button onclick="window.changeStatus('${id}')" style="width:auto; padding:5px 10px; font-size:11px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;">ጨርሻለሁ</button> : ""}
+                        </div>
+                    `;
                     orderContainer.appendChild(card);
                 });
             }
