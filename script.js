@@ -15,28 +15,35 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const ordersRef = ref(db, "orders");
 
-document.getElementById("sendBtn").onclick = () => {
-    const name = document.getElementById("custName").value;
-    const phone = document.getElementById("custPhone").value;
-    const item = document.getElementById("item").value;
-    
-    if(name && phone && item) {
-        push(ordersRef, { 
-            name: name, 
-            phone: phone, 
-            item: item, 
-            status: "በመጠባበቅ ላይ", 
-            time: new Date().toLocaleTimeString() 
-        }).then(() => {
-            alert("ትዕዛዝ ተልኳል! ✅");
-            document.getElementById("custName").value = "";
-            document.getElementById("custPhone").value = "";
-            document.getElementById("item").value = "";
+// ትዕዛዝ መላኪያ ቁልፍ
+sendBtn.addEventListener('click', () => {
+    const name = document.getElementById('custName').value;
+    const phone = document.getElementById('custPhone').value;
+    const item = document.getElementById('item').value;
+    const price = document.getElementById('itemPrice').value; // አዲሱ ዋጋ
+
+    if (name && phone && item) {
+        // ወደ Firebase መላኪያ
+        push(ordersRef, {
+            customerName: name,
+            phone: phone,
+            item: item,
+            price: price, // ዋጋው እዚህ ጋር ይላካል
+            status: "በመጠባበቅ ላይ",
+            timestamp: new Date().getTime()
         });
+
+        // ሳጥኖቹን ባዶ ማድረግ
+        document.getElementById('custName').value = '';
+        document.getElementById('custPhone').value = '';
+        document.getElementById('item').value = '';
+        document.getElementById('itemPrice').value = '';
+        
+        alert("ትዕዛዝዎ በሚገባ ተልኳል! 🚀");
     } else {
-        alert("እባክዎ ሁሉንም ሳጥኖች ይሙሉ!");
+        alert("እባክዎ ስም፣ ስልክ እና ዕቃ በትክክል ይሙሉ!");
     }
-};
+});
 
 const orderContainer = document.getElementById("orderContainer");
 onValue(ordersRef, (snapshot) => {
