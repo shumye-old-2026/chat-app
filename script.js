@@ -133,4 +133,7 @@ if (navigator.geolocation) {
     });
 } else {
     alert("ስልክህ GPS አይፈቅድም ወይም የለውም።");
-}
+}// ካርታው በትክክል እንዲሳል ማድረግ
+setTimeout(function(){ 
+    map.invalidateSize(); 
+}, 500);
