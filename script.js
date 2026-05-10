@@ -91,49 +91,50 @@ if (navigator.geolocation) {
             last_update: new Date().toLocaleTimeString()
         });
     });
-}// 1. ካርታውን አዲስ አበባ ላይ ማስጀመር
+}// ከቁጥር 95 ጀምሮ እስከ መጨረሻው ያለውን በዚህ ተካው
+
+// 1. ካርታውን ማስጀመር
 var map = L.map('map').setView([9.0192, 38.7525], 13);
 
-// 2. የካርታውን መልክ (Tiles) መጫን
+// 2. የካርታ ምስሎችን መጫን
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. የሰራተኛውን ምልክት (Marker) ማዘጋጀት
+// 3. የሰራተኛውን ምልክት (Marker) ማስቀመጥ
 var marker = L.marker([9.0192, 38.7525]).addTo(map)
     .bindPopup('የደሊቨሪ ሰራተኛው እዚህ ነው')
     .openPopup();
 
-// 4. የሰራተኛውን የቀጥታ ቦታ መከታተል (Real-time tracking)
+// 4. የቀጥታ ቦታን መከታተል (Real-time tracking)
 if (navigator.geolocation) {
     navigator.geolocation.watchPosition(function(position) {
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
 
-        // ምልክቱን ካርታው ላይ አዲሱ ቦታ ላይ ማድረግ
+        // ምልክቱን ካርታው ላይ ማንቀሳቀስ
         var newLatLng = new L.LatLng(lat, lng);
         marker.setLatLng(newLatLng);
         
-        // ካርታው ሰራተኛውን ተከትሎ እንዲንቀሳቀስ (አማራጭ)
-        // map.setView(newLatLng, 15);
+        // ካርታው ስራውን እንዲያስተካክል
+        map.invalidateSize();
 
-        // 5. ቦታውን ወደ Firebase መላክ (አንተ ከቤት ሆነህ እንድታየው)
+        // 5. ቦታውን ወደ Firebase መላክ
         const locationRef = ref(db, 'delivery_live/driver1');
         update(locationRef, {
             lat: lat,
             lng: lng,
             timestamp: new Date().getTime()
         });
-
     }, function(error) {
         console.error("GPS Error: " + error.message);
     }, {
-        enableHighAccuracy: true, // ለበለጠ ጥራት
+        enableHighAccuracy: true,
         maximumAge: 0
     });
-} else {
-    alert("ስልክህ GPS አይፈቅድም ወይም የለውም።");
-}// ካርታው በትክክል እንዲሳል ማድረግ
+}
+
+// ካርታው ነጭ ሆኖ እንዳይቀር በየግማሽ ሰከንዱ እንዲነቃ ማድረግ
 setTimeout(function(){ 
     map.invalidateSize(); 
 }, 500);
