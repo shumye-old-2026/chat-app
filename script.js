@@ -56,15 +56,13 @@ onValue(ordersRef, (snapshot) => {
             let statusColor = order.status === "በመጠባበቅ ላይ" ? "#f39c12" : "#27ae60";
             let statusText = order.status ? order.status : "በመጠባበቅ ላይ";
             
-            card.innerHTML = "<div style='display:flex; justify-content:space-between; align-items:center;'>" +
-    "<strong>👤 " + order.name + "</strong>" +
-    "<span style='color:" + statusColor + "; font-weight:bold; font-size:12px;'>● " + statusText + "</span>" +
-    "</div>" +
-    "<p>📞 " + order.phone + "</p>" +
-    "<p>📦 " + order.item + "</p>" +
-    "<div style='display:flex; justify-content:space-between; align-items:center;'>" +
-    "<small style='color:#999'>⏰ " + (order.time || '---') + "</small>" +
-    (statusText === "በመጠባበቅ ላይ" ? "<button onclick=\"window.changeStatus('" + id + "')\" style='width:auto; padding:5px 10px; font-size:11px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;'>ጨርሻለሁ</button>" : "") +
+            card.innerHTML = 
+    '<p><strong>ስም:</strong> ' + order.customerName + '</p>' +
+    '<p><strong>ስልክ:</strong> ' + order.phone + '</p>' +
+    '<p><strong>ዕቃ:</strong> ' + order.item + '</p>' +
+    '<p><strong>ዋጋ:</strong> ' + (order.price ? order.price + ' ብር' : 'ያልተጠቀሰ') + '</p>' +
+    '<p><strong>ሁኔታ:</strong> <span style="color: ' + statusColor + '">' + order.status + '</span></p>' +
+    (order.status === "በመጠባበቅ ላይ" ? '<button onclick="window.changeStatus(\'' + id + '\')" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;">እንደተረከብኩ አሳውቅ</button>' : "");
     "</div>";
             
             orderContainer.appendChild(card);
