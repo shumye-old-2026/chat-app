@@ -1,6 +1,8 @@
  <!DOCTYPE html>
 <html lang="am">
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shumye Delivery</title>
@@ -15,12 +17,13 @@
     </style>
 </head>
 <body>
+   <div id="map" style="height: 300px; width: 100%; margin-top: 20px; border-radius: 10px; border: 2px solid #007bff;"></div> 
     <div class="container">
         <div class="header">Shumye Delivery 🚚</div>
         <input type="text" id="custName" placeholder="የእርስዎ ስም">
         <input type="text" id="custPhone" placeholder="ስልክ ቁጥር">
         <textarea id="item" placeholder="የሚፈልጉት ዕቃ..."></textarea>
-        <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
+        <button id="sendBtn">ትዕዛዝ ላክ 🚀</button><div id="map" style="height: 400px; width: 100%; border-radius: 15px; margin-bottom: 20px;"></div>
         <div id="orderContainer" class="orders-list"></div>
     </div>
 <script type="module" src="script.js"></script>

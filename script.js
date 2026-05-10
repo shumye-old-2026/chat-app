@@ -67,4 +67,70 @@ onValue(ordersRef, (snapshot) => {
 
 window.changeStatus = (id) => {
     update(ref(db, 'orders/' + id), { status: "ተጠናቋል" });
-};
+};// ካርታውን ማስጀመር (አዲስ አበባ ላይ)
+const map = L.map('map').setView([9.03, 38.74], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// የሰራተኛውን ምልክት (Marker) ማዘጋጀት
+let deliveryMarker = L.marker([9.03, 38.74]).addTo(map).bindPopup("የደሊቨሪ ሰራተኛ");
+
+// የሰራተኛውን ቦታ በየጊዜው መከታተል (GPS)
+if (navigator.geolocation) {
+    navigator.geolocation.watchPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        
+        // 1. ካርታው ላይ ቦታውን መቀየር
+        const newPos = [latitude, longitude];
+        deliveryMarker.setLatLng(newPos);
+        map.setView(newPos);
+
+        // 2. ወደ Firebase መላክ (አንተ ከቤት ሆነህ ለማየት)
+        update(ref(db, 'delivery_location/'), {
+            lat: latitude,
+            lng: longitude,
+            last_update: new Date().toLocaleTimeString()
+        });
+    });
+}// 1. ካርታውን አዲስ አበባ ላይ ማስጀመር
+var map = L.map('map').setView([9.0192, 38.7525], 13);
+
+// 2. የካርታውን መልክ (Tiles) መጫን
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// 3. የሰራተኛውን ምልክት (Marker) ማዘጋጀት
+var marker = L.marker([9.0192, 38.7525]).addTo(map)
+    .bindPopup('የደሊቨሪ ሰራተኛው እዚህ ነው')
+    .openPopup();
+
+// 4. የሰራተኛውን የቀጥታ ቦታ መከታተል (Real-time tracking)
+if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(function(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+
+        // ምልክቱን ካርታው ላይ አዲሱ ቦታ ላይ ማድረግ
+        var newLatLng = new L.LatLng(lat, lng);
+        marker.setLatLng(newLatLng);
+        
+        // ካርታው ሰራተኛውን ተከትሎ እንዲንቀሳቀስ (አማራጭ)
+        // map.setView(newLatLng, 15);
+
+        // 5. ቦታውን ወደ Firebase መላክ (አንተ ከቤት ሆነህ እንድታየው)
+        const locationRef = ref(db, 'delivery_live/driver1');
+        update(locationRef, {
+            lat: lat,
+            lng: lng,
+            timestamp: new Date().getTime()
+        });
+
+    }, function(error) {
+        console.error("GPS Error: " + error.message);
+    }, {
+        enableHighAccuracy: true, // ለበለጠ ጥራት
+        maximumAge: 0
+    });
+} else {
+    alert("ስልክህ GPS አይፈቅድም ወይም የለውም።");
+}
