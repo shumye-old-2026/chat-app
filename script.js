@@ -67,46 +67,22 @@ onValue(ordersRef, (snapshot) => {
 
 window.changeStatus = (id) => {
     update(ref(db, 'orders/' + id), { status: "ተጠናቋል" });
-};// ካርታውን ማስጀመር (አዲስ አበባ ላይ)
-const map = L.map('map').setView([9.03, 38.74], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+};// መስመር 70 ላይ ይሄንን ፔስት አድርግ
 
-// የሰራተኛውን ምልክት (Marker) ማዘጋጀት
-let deliveryMarker = L.marker([9.03, 38.74]).addTo(map).bindPopup("የደሊቨሪ ሰራተኛ");
-
-// የሰራተኛውን ቦታ በየጊዜው መከታተል (GPS)
-if (navigator.geolocation) {
-    navigator.geolocation.watchPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        
-        // 1. ካርታው ላይ ቦታውን መቀየር
-        const newPos = [latitude, longitude];
-        deliveryMarker.setLatLng(newPos);
-        map.setView(newPos);
-
-        // 2. ወደ Firebase መላክ (አንተ ከቤት ሆነህ ለማየት)
-        update(ref(db, 'delivery_location/'), {
-            lat: latitude,
-            lng: longitude,
-            last_update: new Date().toLocaleTimeString()
-        });
-    });
-}// ከቁጥር 95 ጀምሮ እስከ መጨረሻው ያለውን በዚህ ተካው
-
-// 1. ካርታውን ማስጀመር
+// 1. ካርታውን ማስጀመር (አዲስ አበባ ላይ)
 var map = L.map('map').setView([9.0192, 38.7525], 13);
 
-// 2. የካርታ ምስሎችን መጫን
+// 2. የካርታ ምስሎችን (Tiles) መጫን
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. የሰራተኛውን ምልክት (Marker) ማስቀመጥ
+// 3. የሰራተኛውን ምልክት (Marker) ማዘጋጀት
 var marker = L.marker([9.0192, 38.7525]).addTo(map)
     .bindPopup('የደሊቨሪ ሰራተኛው እዚህ ነው')
     .openPopup();
 
-// 4. የቀጥታ ቦታን መከታተል (Real-time tracking)
+// 4. የሰራተኛውን ቦታ በየጊዜው መከታተል (GPS)
 if (navigator.geolocation) {
     navigator.geolocation.watchPosition(function(position) {
         var lat = position.coords.latitude;
@@ -116,7 +92,7 @@ if (navigator.geolocation) {
         var newLatLng = new L.LatLng(lat, lng);
         marker.setLatLng(newLatLng);
         
-        // ካርታው ስራውን እንዲያስተካክል
+        // ካርታው ራሱን እንዲያስተካክል
         map.invalidateSize();
 
         // 5. ቦታውን ወደ Firebase መላክ
@@ -138,3 +114,4 @@ if (navigator.geolocation) {
 setTimeout(function(){ 
     map.invalidateSize(); 
 }, 500);
+
