@@ -57,9 +57,9 @@ onValue(ordersRef, (snapshot) => {
             let statusText = order.status ? order.status : "በመጠባበቅ ላይ";
 
             card.innerHTML = 
-                '<p><strong>ስም:</strong> ' + order.customerName + '</p>' +
-                '<p><strong>ስልክ:</strong> ' + order.phone + '</p>' +
-                '<p><strong>ዕቃ:</strong> ' + order.item + '</p>' +
+                '<p><strong>ስም:</strong> ' + (order.customerName || 'ያልታወቀ') + '</p>' +
+                '<p><strong>ስልክ:</strong> ' + (order.phone || 'የለም') + '</p>' +
+                '<p><strong>ዕቃ:</strong> ' + (order.item || 'የለም') + '</p>' +
                 '<p><strong>ዋጋ:</strong> ' + (order.price ? order.price + ' ብር' : 'ያልተጠቀሰ') + '</p>' +
                 '<p><strong>ሁኔታ:</strong> <span style="color: ' + statusColor + '">' + statusText + '</span></p>' +
                 (order.status === "በመጠባበቅ ላይ" ? '<button onclick="window.changeStatus(\'' + id + '\')" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;">እንደተረከብኩ አሳውቅ</button>' : "");
