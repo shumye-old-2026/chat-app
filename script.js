@@ -96,11 +96,22 @@ onValue(ordersRef, (snapshot) => {
 window.changeStatus = (id) => {
     update(ref(db, 'orders/' + id), { status: 'ተጠናቅቋል' });
 };
- // 4. ካርታውን ለመጫን
-var map = L.map('map').setView([9.0192, 38.7525], 13);
+ // ካርታውን መጀመሪያ አዲስ አበባ ላይ ማስጀመር
+var map = L.map('map').setView([9.0192, 38.7525], 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
+    attribution: '© OpenStreetMap'
 }).addTo(map);
 
-var marker = L.marker([9.0192, 38.7525]).addTo(map);
-marker.bindPopup('የእርስዎ ቦታ እዚህ ነው').openPopup();
+// የትዕዛዝ ምልክቶችን ለማስቀመጥ
+onValue(ordersRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+        Object.entries(data).forEach(([id, order]) => {
+            if (order.location && order.status === 'በመጠባበቅ ላይ') {
+                // በደንበኛው ቦታ ላይ ምልክት ማድረግ
+                var orderMarker = L.marker([order.location.lat, order.location.lng]).addTo(map);
+                orderMarker.bindPopup('<b>ትዕዛዝ ከ: ' + order.customerName + '</b><br>ዕቃ: ' + order.item);
+            }
+        });
+    }
+});
