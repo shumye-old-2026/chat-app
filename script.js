@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBVwvrXBlyaIISyUFf2NyLFBq_mmcvaPCc",
+    apiKey: "AIzaSyBVwvrXBIyaIISyUFf2NyLFBq_mmcvaPCc",
     authDomain: "my-chat-app-393d0.firebaseapp.com",
     databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
     projectId: "my-chat-app-393d0",
@@ -13,110 +13,94 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const ordersRef = ref(db, "orders");
+const ordersRef = ref(db, 'orders');
 
-// ትዕዛዝ መላኪያ ቁልፍ
+// የድምፅ ማሳወቂያ
+const notificationSound = new Audio('notification.mp3');
+
+// ኤለመንቶችን ማግኘት
+const sendBtn = document.getElementById('sendBtn');
+const orderContainer = document.getElementById('orderContainer');
+
+// 1. ትዕዛዝ ለመላክ (GPS ጨምሮ)
 sendBtn.addEventListener('click', () => {
     const name = document.getElementById('custName').value;
     const phone = document.getElementById('custPhone').value;
     const item = document.getElementById('item').value;
-    const price = document.getElementById('itemPrice').value; // አዲሱ ዋጋ
+    const price = document.getElementById('itemPrice').value;
 
-    if (name && phone && item) {
-        // ወደ Firebase መላኪያ
-        push(ordersRef, {
-            customerName: name,
-            phone: phone,
-            item: item,
-            price: price, // ዋጋው እዚህ ጋር ይላካል
-            status: "በመጠባበቅ ላይ",
-            timestamp: new Date().getTime()
+    if (name === '' || phone === '') {
+        alert('እባክዎን ስም እና ስልክ ያስገቡ!');
+        return;
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            push(ordersRef, {
+                customerName: name,
+                phone: phone,
+                item: item,
+                price: price,
+                location: { lat: lat, lng: lng },
+                status: 'በመጠባበቅ ላይ',
+                timestamp: Date.now()
+            }).then(() => {
+                alert('ትዕዛዝዎ ተልኳል!');
+                document.getElementById('custName').value = '';
+                document.getElementById('custPhone').value = '';
+                document.getElementById('item').value = '';
+                document.getElementById('itemPrice').value = '';
+            });
+        }, (error) => {
+            alert('GPS ማግኘት አልተቻለም፣ እባክዎን Location ይፍቀዱ!');
         });
-
-        // ሳጥኖቹን ባዶ ማድረግ
-        document.getElementById('custName').value = '';
-        document.getElementById('custPhone').value = '';
-        document.getElementById('item').value = '';
-        document.getElementById('itemPrice').value = '';
-        
-        alert("ትዕዛዝዎ በሚገባ ተልኳል! 🚀");
     } else {
-        alert("እባክዎ ስም፣ ስልክ እና ዕቃ በትክክል ይሙሉ!");
+        alert('ብሮውዘርዎ GPS አይደግፍም!');
     }
 });
 
-const orderContainer = document.getElementById("orderContainer"); const notificationSound = new Audio('notification.mp3');
-const notificationSound = new Audio('notification.mp3');
-
+// 2. ትዕዛዞችን ለመቀበልና ለማሳየት
 onValue(ordersRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
-        notificationSound.play().catch(e => console.log("ድምፅ ለማጫወት ገጹን ይንኩ"));
-        orderContainer.innerHTML = "";
+        notificationSound.play().catch(e => console.log('ድምፅ ለማጫወት ገጹን ይንኩ'));
+        
+        orderContainer.innerHTML = '';
         Object.entries(data).reverse().forEach(([id, order]) => {
-            const card = document.createElement("div");
-            card.className = "order-card";
-            let statusColor = order.status === "በመጠባበቅ ላይ" ? "#f39c12" : "#27ae60";
-            let statusText = order.status ? order.status : "በመጠባበቅ ላይ";
-            card.innerHTML = 
-                '<p><strong>ስም:</strong> ' + (order.customerName || 'ያልታወቀ') + '</p>' +
-                '<p><strong>ስልክ:</strong> ' + (order.phone || 'የለም') + '</p>' +
-                '<p><strong>ዕቃ:</strong> ' + (order.item || 'የለም') + '</p>' +
-                '<p><strong>ዋጋ:</strong> ' + (order.price ? order.price + ' ብር' : 'ያልተጠቀሰ') + '</p>' +
-                '<p><strong>ሁኔታ:</strong> <span style="color: ' + statusColor + '">' + statusText + '</span></p>' +
-                (order.status === "በመጠባበቅ ላይ" ? '<button onclick="window.changeStatus(\'' + id + '\')" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;">እንደተረከብኩ አሳውቅ</button>' : "");
+            const card = document.createElement('div');
+            card.className = 'order-card';
+
+            let statusColor = order.status === 'በመጠባበቅ ላይ' ? '#f39c12' : '#27ae60';
+            let statusText = order.status ? order.status : 'በመጠባበቅ ላይ';
+
+            let cardHTML = '<p><strong>ስም:</strong> ' + (order.customerName || 'ያልታወቀ') + '</p>';
+            cardHTML += '<p><strong>ስልክ:</strong> ' + (order.phone || 'የለም') + '</p>';
+            cardHTML += '<p><strong>ዕቃ:</strong> ' + (order.item || 'የለም') + '</p>';
+            cardHTML += '<p><strong>ዋጋ:</strong> ' + (order.price ? order.price + ' ብር' : 'ያልተጠቀሰ') + '</p>';
+            cardHTML += '<p><strong>ሁኔታ:</strong> <span style="color: ' + statusColor + '">' + statusText + '</span></p>';
+
+            if (order.status === 'በመጠባበቅ ላይ') {
+                cardHTML += '<button onclick="window.changeStatus(\'' + id + '\')" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;">እንደተረከብኩ አሳውቅ</button>';
+            }
+
+            card.innerHTML = cardHTML;
             orderContainer.appendChild(card);
         });
     }
-}); 
+});
+
+// 3. ሁኔታን ለመቀየር
 window.changeStatus = (id) => {
-    const { update, ref } = window.firebaseDb; // ይህ መስመር አስፈላጊ ሊሆን ይችላል
-    update(ref(db, 'orders/' + id), { status: "ተጠናቅቋል" });
+    update(ref(db, 'orders/' + id), { status: 'ተጠናቅቋል' });
 };
-
-// 1. ካርታውን ማስጀመር (አዲስ አበባ ላይ)
+ // 4. ካርታውን ለመጫን
 var map = L.map('map').setView([9.0192, 38.7525], 13);
-
-// 2. የካርታ ምስሎችን (Tiles) መጫን
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. የሰራተኛውን ምልክት (Marker) ማዘጋጀት
-var marker = L.marker([9.0192, 38.7525]).addTo(map)
-    .bindPopup('የደሊቨሪ ሰራተኛው እዚህ ነው')
-    .openPopup();
-
-// 4. የሰራተኛውን ቦታ በየጊዜው መከታተል (GPS)
-if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(function(position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-
-        // ምልክቱን ካርታው ላይ ማንቀሳቀስ
-        var newLatLng = new L.LatLng(lat, lng);
-        marker.setLatLng(newLatLng);
-        
-        // ካርታው ራሱን እንዲያስተካክል
-        map.invalidateSize();
-
-        // 5. ቦታውን ወደ Firebase መላክ
-        const locationRef = ref(db, 'delivery_live/driver1');
-        update(locationRef, {
-            lat: lat,
-            lng: lng,
-            timestamp: new Date().getTime()
-        });
-    }, function(error) {
-        console.error("GPS Error: " + error.message);
-    }, {
-        enableHighAccuracy: true,
-        maximumAge: 0
-    });
-}
-
-// ካርታው ነጭ ሆኖ እንዳይቀር በየግማሽ ሰከንዱ እንዲነቃ ማድረግ
-setTimeout(function(){ 
-    map.invalidateSize(); 
-}, 500);
-
+var marker = L.marker([9.0192, 38.7525]).addTo(map);
+marker.bindPopup('የእርስዎ ቦታ እዚህ ነው').openPopup();
