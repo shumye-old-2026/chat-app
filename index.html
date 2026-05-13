@@ -3,37 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shumye Fast Delivery</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <title>Shumye Delivery</title>
+    <!-- የካርታው ዲዛይን -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
-        header { background: #1a73e8; color: white; padding: 20px; text-align: center; }
-        .form-container { background: white; padding: 20px; margin: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button#sendBtn { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-size: 18px; cursor: pointer; }
-        #map { height: 350px; width: calc(100% - 30px); margin: 15px; border-radius: 12px; border: 2px solid #1a73e8; }
-        .order-card { background: white; padding: 15px; margin: 10px; border-radius: 8px; border-left: 5px solid #1a73e8; }
+        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        .box { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { background: #28a745; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        /* ካርታው የግድ ቁመት ያስፈልገዋል */
+        #map { height: 300px; width: 100%; border-radius: 10px; border: 2px solid #1a73e8; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <header><h1>Shumye Fast Delivery 🚀</h1></header>
 
-    <div class="form-container">
-        <input type="text" id="custName" placeholder="የደንበኛ ስም">
-        <input type="text" id="phone" placeholder="ስልክ ቁጥር">
-        <input type="text" id="item" placeholder="የሚፈለገው ዕቃ...">
-        <input type="number" id="price" placeholder="ዋጋ (በብር)">
+    <div class="box">
+        <input type="text" id="custName" placeholder="ስም">
+        <input type="text" id="phone" placeholder="ስልክ">
+        <input type="text" id="item" placeholder="ዕቃ">
+        <input type="number" id="price" placeholder="ዋጋ">
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
     </div>
 
     <div id="map"></div>
 
-    <div class="form-container">
-        <h2 style="color: #1a73e8;">የመጡ ትዕዛዞች 📋</h2>
-        <div id="orderContainer"></div>
+    <div id="orderList" class="box">
+        <h3>የመጡ ትዕዛዞች</h3>
+        
+        <div id="container"></div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- የካርታው ስክሪፕት -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
