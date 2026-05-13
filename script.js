@@ -1,16 +1,23 @@
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
 
-// ካርታ ማስጀመሪያ
+// ካርታውን ማስጀመር
 const map = L.map('map').setView([9.0300, 38.7400], 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 const marker = L.marker([9.0300, 38.7400], {draggable: true}).addTo(map);
 
-let pos = { lat: 9.0300, lon: 38.7400 };
-marker.on('dragend', () => { pos = marker.getLatLng(); });
+let currentLat = 9.0300;
+let currentLon = 38.7400;
+
+marker.on('dragend', function() {
+    const pos = marker.getLatLng();
+    currentLat = pos.lat;
+    currentLon = pos.lng;
+});
 
 // ትዕዛዝ መላኪያ
-document.getElementById('sendBtn').onclick = () => {
+const sendBtn = document.getElementById('sendBtn');
+sendBtn.onclick = function() {
     const name = document.getElementById('custName').value;
     const phone = document.getElementById('phone').value;
     const item = document.getElementById('item').value;
@@ -22,25 +29,32 @@ document.getElementById('sendBtn').onclick = () => {
             phoneNumber: phone,
             orderItem: item,
             orderPrice: price,
-            location: { lat: pos.lat, lon: pos.lng },
+            location: { lat: currentLat, lon: currentLon },
             timestamp: new Date().toLocaleString()
-        }).then(() => {
-            alert('ተልኳል! ✅');
-            location.reload(); 
+        }).then(function() {
+            alert('ትዕዛዝ ተልኳል! ✅');
+            location.reload();
         });
-    } else { alert('ሁሉንም ሙላ!'); }
+    } else {
+        alert('እባክህ ሁሉንም ሙላ!');
+    }
 };
 
-// ትዕዛዝ ማንበቢያ
-onValue(ref(database, 'orders'), (snapshot) => {
+// ትዕዛዞችን ማሳያ (ባክቲክ የሌለው)
+onValue(ref(database, 'orders'), function(snapshot) {
     const data = snapshot.val();
     const container = document.getElementById('orderContainer');
     container.innerHTML = '';
     if (data) {
-        Object.keys(data).reverse().forEach(key => {
+        Object.keys(data).reverse().forEach(function(key) {
             const o = data[key];
-            container.innerHTML += <div style="background:white; padding:10px; margin:5px; border-radius:5px;">
-                ${o.customerName} - ${o.orderItem} (${o.orderPrice} ብር)</div>;
+            const div = document.createElement('div');
+            div.className = 'order-card';
+            // እዚህ ጋር ባክቲክ ሳይሆን በመደመር (+) ምልክት ነው የተሰራው
+            div.innerHTML = '<p><strong>ስም:</strong> ' + o.customerName + '</p>' +
+                            '<p><strong>ዕቃ:</strong> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)</p>' +
+                            '<p><small>' + o.timestamp + '</small></p>';
+            container.appendChild(div);
         });
     }
 });
