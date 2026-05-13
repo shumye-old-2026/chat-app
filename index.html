@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shumye Fast Delivery</title>
-    <!-- Leaflet CSS ለካርታው -->
+    <!-- ካርታው እንዲሰራ የግድ አስፈላጊ ነው -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
-        header { background: #1a73e8; color: white; padding: 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        header h1 { margin: 0; font-size: 28px; }
-        .form-container { background: white; padding: 20px; margin: 20px 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
+        header { background: #1a73e8; color: white; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; }
+        header h1 { margin: 0; font-size: 26px; color: white !important; }
+        .form-container { background: white; padding: 20px; margin: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button#sendBtn { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; }
-        #map { height: 350px; width: calc(100% - 30px); margin: 20px 15px; border: 3px solid #1a73e8; border-radius: 15px; }
-        .order-card { background: #f9f9f9; padding: 15px; border-left: 5px solid #1a73e8; margin-bottom: 10px; border-radius: 5px; }
+        #map { height: 300px; width: calc(100% - 30px); margin: 15px; border: 2px solid #1a73e8; border-radius: 15px; }
     </style>
 </head>
 <body>
@@ -24,27 +23,28 @@
         <p>ፈጣን እና ታማኝ የዕቃ ማድረሻ</p>
     </header>
 
+    <!-- የትዕዛዝ መላኪያ ፎርም -->
     <div class="form-container">
         <input type="text" id="custName" placeholder="የደንበኛ ስም">
         <input type="text" id="phone" placeholder="ስልክ ቁጥር">
         <input type="text" id="item" placeholder="የሚፈለገው ዕቃ...">
+        <input type="number" id="price" placeholder="ዋጋ (በብር)">
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
     </div>
 
+    <!-- ካርታው የሚቀመጥበት ቦታ -->
     <div id="map"></div>
 
+    <!-- የመጡ ትዕዛዞች ዝርዝር -->
     <div class="form-container">
-        <input type="text" id="custName" placeholder="የደንበኛ ስም">
-        <input type="text" id="phone" placeholder="ስልክ ቁጥር">
-        <input type="text" id="item" placeholder="የሚፈለገው ዕቃ...">
-        <input type="number" id="price" placeholder="የዕቃው ዋጋ (በብር)"> <!-- ይሄ ነው የጠፋው -->
-        <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
-    </div>
-        
+        <h2 style="color: #1a73e8; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">የመጡ ትዕዛዞች 📋</h2>
+        <div id="orderContainer">
+            <p style="text-align: center; color: #888;">በአሁኑ ሰዓት ምንም ትዕዛዝ የለም...</p>
+        </div>
     </div>
 
-    <!-- Firebase እና Leaflet Scripts -->
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="script.js"></script>
 </body>
-</html> 
+</html>
