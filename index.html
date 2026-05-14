@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shumye Fast Delivery</title>
-    <!-- የካርታው ፋይሎች -->
+    <!-- ካርታው እንዲሰራ አስፈላጊው ፋይል -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
-        /* ሄደሩ እንዲታይ ይህ ወሳኝ ነው */
-        header { background-color: #1a73e8 !important; color: white !important; padding: 25px; text-align: center; display: block; }
+        header { background-color: #1a73e8; color: white; padding: 20px; text-align: center; }
         header h1 { margin: 0; font-size: 24px; color: white; }
-        .form-container { background: white; padding: 20px; margin: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-container { background: white; padding: 20px; margin: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button#sendBtn { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; }
-        /* ካርታው ቁመት ከሌለው አይታይም */
-        #map { height: 350px; width: calc(100% - 30px); margin: 15px; border-radius: 15px; border: 2px solid #1a73e8; background: #eee; }
-        .order-card { background: white; padding: 15px; margin: 10px; border-radius: 8px; border-left: 5px solid #1a73e8; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        /* ካርታው ቁመት ከሌለው ነጭ ሆኖ ነው የሚታየው */
+        #map { height: 350px; width: calc(100% - 30px); margin: 15px; border-radius: 12px; border: 2px solid #1a73e8; }
+        .order-card { background: white; padding: 15px; margin: 10px; border-radius: 8px; border-left: 5px solid #1a73e8; }
     </style>
 </head>
 <body>
@@ -36,11 +35,11 @@
     <div id="map"></div>
 
     <div class="form-container">
-        <h3 style="color: #1a73e8; margin-top: 0;">የመጡ ትዕዛዞች 📋</h3>
+        <h3 style="color: #1a73e8; margin: 0;">የመጡ ትዕዛዞች 📋</h3>
         <div id="orderContainer"></div>
     </div>
 
-    <!-- የካርታው ስክሪፕት -->
+    <!-- እነዚህን ፋይሎች ቅደም ተከተላቸውን አትቀይር -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="script.js"></script>
 </body>
