@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shumye Fast Delivery</title>
-    <!-- የካርታ ፋይሎች -->
+    <!-- የካርታው CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
@@ -14,7 +14,16 @@
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button#sendBtn { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; }
         /* ካርታው እንዲታይ ይህ ወሳኝ ነው */
-        #map { height: 400px; width: calc(100% - 30px); margin: 15px; border-radius: 12px; border: 2px solid #1a73e8; background: #eee; position: relative; z-index: 1; }
+        #map { 
+            height: 400px; 
+            width: calc(100% - 30px); 
+            margin: 15px; 
+            border-radius: 12px; 
+            border: 2px solid #1a73e8; 
+            background: #eee; 
+            position: relative; 
+            z-index: 1; 
+        }
         .order-card { background: white; padding: 15px; margin: 10px; border-radius: 8px; border-left: 5px solid #1a73e8; }
     </style>
 </head>
@@ -39,8 +48,9 @@
         <div id="orderContainer"></div>
     </div>
 
-    <!-- ቅደም ተከተላቸውን አትቀይር -->
+    <!-- የካርታው JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="script.js"></script>
+    <!-- ስክሪፕቱን በካሸ እንዳይይዘው ?v=3 ጨምሬበታለሁ -->
+    <script type="module" src="script.js?v=3"></script>
 </body>
 </html>
