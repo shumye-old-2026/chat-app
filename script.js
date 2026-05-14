@@ -3,9 +3,18 @@ import { database } from './firebase-config.js';
 
 // 1. ካርታ ማስጀመሪያ
 const map = L.map('map').setView([9.0300, 38.7400], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+}).addTo(map);
 
 const marker = L.marker([9.0300, 38.7400], {draggable: true}).addTo(map);
+
+// ካርታው ቶሎ እንዲመጣ
+setTimeout(function() {
+    map.invalidateSize();
+}, 500);
 
 let currentLat = 9.0300;
 let currentLon = 38.7400;

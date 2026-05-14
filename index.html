@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shumye Fast Delivery</title>
-    <!-- ካርታው እንዲሰራ አስፈላጊው ፋይል -->
+    <!-- የካርታ ፋይሎች -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
@@ -13,8 +13,8 @@
         .form-container { background: white; padding: 20px; margin: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button#sendBtn { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; }
-        /* ካርታው ቁመት ከሌለው ነጭ ሆኖ ነው የሚታየው */
-        #map { height: 350px; width: calc(100% - 30px); margin: 15px; border-radius: 12px; border: 2px solid #1a73e8; }
+        /* ካርታው እንዲታይ ይህ ወሳኝ ነው */
+        #map { height: 400px; width: calc(100% - 30px); margin: 15px; border-radius: 12px; border: 2px solid #1a73e8; background: #eee; position: relative; z-index: 1; }
         .order-card { background: white; padding: 15px; margin: 10px; border-radius: 8px; border-left: 5px solid #1a73e8; }
     </style>
 </head>
@@ -39,7 +39,7 @@
         <div id="orderContainer"></div>
     </div>
 
-    <!-- እነዚህን ፋይሎች ቅደም ተከተላቸውን አትቀይር -->
+    <!-- ቅደም ተከተላቸውን አትቀይር -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="script.js"></script>
 </body>
