@@ -3,34 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shumye Fast Delivery</title>
+    <title>Shumye Delivery</title>
     <!-- የካርታው CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
-        header { background-color: #1a73e8; color: white; padding: 20px; text-align: center; }
-        header h1 { margin: 0; font-size: 24px; color: white; }
-        .form-container { background: white; padding: 20px; margin: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 10px; }
+        header { background-color: #1a73e8; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 15px; }
+        .form-container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button#sendBtn { background-color: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; }
-        /* ካርታው እንዲታይ ይህ ወሳኝ ነው */
+        /* ካርታው እንዲታይ ይህ ክፍል ወሳኝ ነው */
         #map { 
-            height: 400px; 
-            width: calc(100% - 30px); 
-            margin: 15px; 
-            border-radius: 12px; 
+            height: 350px; 
+            width: 100%; 
+            border-radius: 15px; 
             border: 2px solid #1a73e8; 
-            background: #eee; 
-            position: relative; 
-            z-index: 1; 
+            background-color: #eee;
+            margin-bottom: 15px;
+            z-index: 1;
         }
-        .order-card { background: white; padding: 15px; margin: 10px; border-radius: 8px; border-left: 5px solid #1a73e8; }
+        .order-card { background: white; padding: 15px; margin-top: 10px; border-radius: 10px; border-left: 5px solid #1a73e8; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Shumye Fast Delivery 🚀</h1>
+        <h1 style="margin:0;">Shumye Delivery 🚀</h1>
     </header>
 
     <div class="form-container">
@@ -41,16 +39,18 @@
         <button id="sendBtn">ትዕዛዝ ላክ 🚀</button>
     </div>
 
+    <!-- ካርታው እዚህ ጋር ነው የሚታየው -->
     <div id="map"></div>
 
     <div class="form-container">
-        <h3 style="color: #1a73e8; margin: 0;">የመጡ ትዕዛዞች 📋</h3>
-        <div id="orderContainer"></div>
+        <h3 style="color: #1a73e8; margin-top:0;">የመጡ ትዕዛዞች 📋</h3>
+        <div id="orderContainer">
+            <p style="text-align:center; color:#999;">ትዕዛዞች በመጫን ላይ...</p>
+        </div>
     </div>
 
     <!-- የካርታው JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- ስክሪፕቱን በካሸ እንዳይይዘው ?v=3 ጨምሬበታለሁ -->
-    <script type="module" src="script.js?v=3"></script>
+    <script type="module" src="script.js?v=4"></script>
 </body>
 </html>
