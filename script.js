@@ -1,59 +1,67 @@
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
 
-// 1. ካርታውን ማስጀመር (አስፈላጊ ከሆነ)
-const map = L.map('map').setView([9.0300, 38.7400], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-const marker = L.marker([9.0300, 38.7400], {draggable: true}).addTo(map);
+// 1. ካርታውን ማስጀመር
+var map = L.map('map').setView([9.0192, 38.7525], 13);
 
-// 2. ትዕዛዝ መላኪያ
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+var marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
+
+// 2. ትዕዛዝ መላክ
 const sendBtn = document.getElementById('sendBtn');
-sendBtn.onclick = function() {
-    const name = document.getElementById('custName').value;
-    const phone = document.getElementById('phone').value;
-    const item = document.getElementById('item').value;
-    const price = document.getElementById('price').value;
-    const pos = marker.getLatLng();
+if (sendBtn) {
+    sendBtn.onclick = function() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('phone').value;
+        const item = document.getElementById('item').value;
+        const price = document.getElementById('price').value;
+        const pos = marker.getLatLng();
 
-    if (name && phone && item && price) {
-        push(ref(database, 'orders'), {
-            customerName: name,
-            phoneNumber: phone,
-            orderItem: item,
-            orderPrice: price,
-            location: { lat: pos.lat, lon: pos.lng },
-            timestamp: new Date().toLocaleString()
-        }).then(function() {
-            alert('ትዕዛዝዎ ተልኳል! ✅');
-            // ሳጥኖቹን ባዶ ለማድረግ
-            document.getElementById('custName').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('item').value = '';
-            document.getElementById('price').value = '';
-        });
-    } else {
-        alert('እባክዎ ሁሉንም ሳጥኖች ይሙሉ!');
-    }
-};
+        if (name && phone && item && price) {
+            push(ref(database, 'orders'), {
+                customerName: name,
+                phoneNumber: phone,
+                orderItem: item,
+                orderPrice: price,
+                location: { lat: pos.lat, lon: pos.lng },
+                timestamp: new Date().toLocaleString()
+            }).then(function() {
+                alert('ትዕዛዝዎ ተልኳል! ✅');
+                document.getElementById('custName').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('item').value = '';
+                document.getElementById('price').value = '';
+            });
+        } else {
+            alert('እባክዎ ሁሉንም ሳጥኖች ይሙሉ!');
+        }
+    };
+}
 
-// 3. የመጡ ትዕዛዞችን ከስር ማሳያ
+// 3. የመጡ ትዕዛዞችን ማሳያ (ያለ ባክቲክ የተሰራ)
 const container = document.getElementById('orderContainer');
 onValue(ref(database, 'orders'), function(snapshot) {
     const data = snapshot.val();
-    container.innerHTML = ''; // የድሮውን አጽዳ
-    
-    if (data) {
-        Object.keys(data).reverse().forEach(function(key) {
-            const o = data[key];
-            const div = document.createElement('div');
-            div.style.cssText = 'background:white; padding:15px; margin-top:10px; border-radius:8px; border-left:5px solid #1a73e8; box-shadow: 0 1px 3px rgba(0,0,0,0.1);';
-            
-            div.innerHTML = '<b>ስም:</b> ' + o.customerName + '<br>' +
-                            '<b>ዕቃ:</b> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)<br>' +
-                            '<small style="color:#888;">' + o.timestamp + '</small>';
-            container.appendChild(div);
-        });
-    } else {
-        container.innerHTML = '<p style="text-align:center; color:#999;">ምንም ትዕዛዝ የለም</p>';
+    if (container) {
+        container.innerHTML = ''; 
+        if (data) {
+            Object.keys(data).reverse().forEach(function(key) {
+                const o = data[key];
+                const card = document.createElement('div');
+                card.style.cssText = 'background:white; padding:15px; margin-top:10px; border-radius:10px; border-left:5px solid #1a73e8; box-shadow: 0 2px 5px rgba(0,0,0,0.1);';
+                
+                // እዚህ ጋር ባክቲክን በ ' + ' ተክቼዋለሁ
+                card.innerHTML = '<b>ስም:</b> ' + o.customerName + '<br>' +
+                                 '<b>ዕቃ:</b> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)<br>' +
+                                 '<small>' + o.timestamp + '</small>';
+                
+                container.appendChild(card);
+            });
+        } else {
+            container.innerHTML = '<p style="text-align:center; color:#999;">ምንም ትዕዛዝ የለም</p>';
+        }
     }
 });
