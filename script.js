@@ -1,22 +1,21 @@
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
 
-// ካርታውን ማስጀመር
+// 1. ካርታውን ማስጀመር
 var map = L.map('map').setView([9.0192, 38.7525], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// ካርታው ግራጫ ሆኖ እንዳይቀር በየሰከንዱ ራሱን እንዲያድስ ማድረግ
-setTimeout(function(){ 
-    map.invalidateSize(); 
+// የግራጫ ካርታ መፍትሄ (ካርታውን መቀስቀሻ)
+setTimeout(function() {
+    map.invalidateSize();
 }, 500);
 
 var marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
 
-// 2. የላክ (Send) በተኑን መቆጣጠር
+// 2. ትዕዛዝ መላክ
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
     sendBtn.onclick = function() {
@@ -24,7 +23,7 @@ if (sendBtn) {
         const phone = document.getElementById('phone').value;
         const item = document.getElementById('item').value;
         const price = document.getElementById('price').value;
-        const pos = marker.getLatLng(); // የካርታው ምልክት ያለበት ቦታ
+        const pos = marker.getLatLng();
 
         if (name && phone && item && price) {
             push(ref(database, 'orders'), {
@@ -35,36 +34,32 @@ if (sendBtn) {
                 location: { lat: pos.lat, lon: pos.lng },
                 timestamp: new Date().toLocaleString()
             }).then(function() {
-                alert('ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል! ✅');
-                // ሳጥኖቹን ማጽዳት
+                alert('ትዕዛዝዎ ተልኳል! ✅');
                 document.getElementById('custName').value = '';
                 document.getElementById('phone').value = '';
                 document.getElementById('item').value = '';
                 document.getElementById('price').value = '';
             });
         } else {
-            alert('እባክዎ ሁሉንም ሳጥኖች በትክክል ይሙሉ!');
+            alert('እባክዎ ሁሉንም መረጃ ይሙሉ!');
         }
     };
 }
 
-// 3. የትዕዛዝ ዝርዝሮችን ከFirebase እያነበቡ ማሳየት (ያለ ባክቲክ)
+// 3. ዝርዝሮችን ማሳየት (ያለ ባክቲክ)
 const container = document.getElementById('orderContainer');
 onValue(ref(database, 'orders'), function(snapshot) {
     const data = snapshot.val();
     if (container) {
-        container.innerHTML = ''; 
+        container.innerHTML = '';
         if (data) {
             Object.keys(data).reverse().forEach(function(key) {
                 const o = data[key];
                 const card = document.createElement('div');
                 card.className = 'order-card';
-                
-                // በተራ ኮቴሽን (' ') የተሰራ የትዕዛዝ ዝርዝር ማሳያ
                 card.innerHTML = '<b>ስም:</b> ' + o.customerName + '<br>' +
                                  '<b>ዕቃ:</b> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)<br>' +
                                  '<small>' + o.timestamp + '</small>';
-                
                 container.appendChild(card);
             });
         } else {
