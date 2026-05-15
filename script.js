@@ -1,14 +1,19 @@
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
 
-// 1. ካርታውን በኢትዮጵያ (አዲስ አበባ) መጋጠሚያ ማስጀመር
+// ካርታውን ማስጀመር
 var map = L.map('map').setView([9.0192, 38.7525], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// የሚንቀሳቀስ ምልክት (Marker) በካርታው ላይ ማድረግ
+// ካርታው ግራጫ ሆኖ እንዳይቀር በየሰከንዱ ራሱን እንዲያድስ ማድረግ
+setTimeout(function(){ 
+    map.invalidateSize(); 
+}, 500);
+
 var marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
 
 // 2. የላክ (Send) በተኑን መቆጣጠር
