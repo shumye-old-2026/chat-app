@@ -1,6 +1,6 @@
 // 1. የFirebase አስመጪዎች (Imports)
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-import { database } from './firebase-config.js';
+import { database } from './firebase_config.js';
 
 // 2. ካርታውን አዲስ አበባ ላይ ማንቀሳቀስ (Initialize)
 const map = L.map('map').setView([9.0192, 38.7525], 13);
