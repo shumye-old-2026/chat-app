@@ -15,17 +15,17 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // የሚንቀሳቀስ ማርከር (Marker) መፍጠር
 const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 
-// // 3. መረጃን ወደ Firebase ለመላክ (የላክ በተን ሥራ)
+
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
   sendBtn.onclick = function () {
     // በቅጽ (Form) ውስጥ የተሞሉትን መረጃዎች መውሰድ
-    const customerName = document.getElementById('customerName').value;
-    const phone = document.getElementById('phone').value;
-    const itemType = document.getElementById('itemType').value;
-    const price = document.getElementById('price').value;
+    const customerName = document.getElementById('customerName')?.value || document.querySelector('input[type="text"]')?.value;
+    const phone = document.getElementById('phone')?.value || document.querySelector('input[type="number"]')?.value;
+    const itemType = document.getElementById('itemType')?.value || document.querySelectorAll('input[type="text"]')[2]?.value;
+    const price = document.getElementById('price')?.value || document.querySelectorAll('input[type="text"]')[3]?.value;
 
-    // የላኪው ማርከር (Marker) ያለበትን የካርታ መጋጠሚያ (Latitude & Longitude) ማግኘት
+    // የላኪው ማርከር (Marker) ያለበትን የካርታ መጋጠሚያ ማግኘት
     const position = marker.getLatLng();
 
     // ሁሉንም መረጃ በአንድ ላይ ማደራጀት
@@ -39,16 +39,12 @@ if (sendBtn) {
       timestamp: new Date().toISOString()
     };
 
-    // መረጃውን ወደ Firebase 'orders' ወደሚባል ክፍል መግፋት (Push ማድረግ)
+    // መረጃውን ወደ Firebase 'orders' ክፍል መግፋት (Push)
     const ordersRef = ref(database, 'orders');
     push(ordersRef, orderData)
       .then(() => {
         alert('🎉 ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!');
-        // ፎርሙን በባዶ ማጽዳት
-        document.getElementById('customerName').value = '';
-        document.getElementById('phone').value = '';
-        document.getElementById('itemType').value = '';
-        document.getElementById('price').value = '';
+        location.reload(); // ገጹን አድሶ ሳጥኖቹን ያጸዳቸዋል
       })
       .catch((error) => {
         alert('❌ ስህተት ተፈጥሯል: ' + error.message);
