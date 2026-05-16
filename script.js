@@ -1,36 +1,17 @@
-// 1. መጀመሪያ ካርታውን እናስጀምር (ከሁሉም በፊት መሆን አለበት!)
+import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { database } from './firebase-config.js';
+
+// 1. ካርታውን አዲስ አበባ ላይ እናስጀምር
 const map = L.map('map').setView([9.0192, 38.7525], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-const marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
+// የሚንቀሳቀስ ማርከር መፍጠር
+const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 
-// አሁን ከዚህ በታች ያሉት ያንተ የድሮ ኮዶች ይቀጥላሉ...
-import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-import { database } from './firebase-config.js'; // 1. መጀመሪያ ካርታውን እናስጀምር (ከሁሉም በፊት መሆን አለበት!)
-const map = L.map('map').setView([9.0192, 38.7525], 13);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-const marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
-
-// አሁን ከዚህ በታች ያሉት ያንተ የድሮ ኮዶች ይቀጥላሉ...
-import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-import { database } from './firebase-config.js';
-
-// የተቀረው የFirebase እና የButton ኮድ እዚህ ይቀጥላል...
-
-// የተቀረው የFirebase እና የButton ኮድ እዚህ ይቀጥላል...
-import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-import { database } from './firebase-config.js';
-
-// ማሳሰቢያ፡ map እና marker ከ index.html ላይ በግሎባል ስለሚመጡ እዚህ ላይ በድጋሚ መጻፍ አያስፈልግም!
-
-// 1. ትዕዛዝ መላክ
+// 2. መረጃን ወደ Firebase ለመላክ (የላክ በተን)
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
     sendBtn.onclick = function() {
@@ -39,7 +20,6 @@ if (sendBtn) {
         const item = document.getElementById('item').value;
         const price = document.getElementById('price').value;
         
-        // ከ index.html ማርከር ላይ ቦታውን ይወስዳል
         const pos = marker.getLatLng();
 
         if (name && phone && item && price) {
@@ -51,36 +31,42 @@ if (sendBtn) {
                 location: { lat: pos.lat, lon: pos.lng },
                 timestamp: new Date().toLocaleString()
             }).then(function() {
-                alert('트ዕዛዝዎ ተልኳል! ✅');
+                alert('ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል! 🚀');
                 document.getElementById('custName').value = '';
                 document.getElementById('phone').value = '';
                 document.getElementById('item').value = '';
                 document.getElementById('price').value = '';
+            }).catch(function(error) {
+                alert('ስህተት ተከስቷል፦ ' + error.message);
             });
         } else {
-            alert('እባክዎ ሁሉንም መረጃ ይሙሉ!');
+            alert('እባክዎ ሁሉንም መረጃዎች በአግባቡ ይሙሉ!');
         }
     };
 }
 
-// 2. ዝርዝሮችን ማሳየት
+// 3. የተላኩ ትዕዛዞችን ከFirebase አምጥቶ ማሳየት
 const container = document.getElementById('orderContainer');
-onValue(ref(database, 'orders'), function(snapshot) {
+onValue(ref(database, 'orders'), (snapshot) => {
     const data = snapshot.val();
     if (container) {
-        container.innerHTML = '';
+        container.innerHTML = ''; 
         if (data) {
             Object.keys(data).reverse().forEach(function(key) {
                 const o = data[key];
                 const card = document.createElement('div');
                 card.className = 'order-card';
-                card.innerHTML = '<b>ስም:</b> ' + o.customerName + '<br>' +
+                
+                // እዚህ ጋር ምንም Backtick የለም - ተራ ነጠላ ሰረዝ ስለሆነ ስህተት አይፈጥርም
+                card.innerHTML = '<b>ስም:</b> ' + (o.customerName || 'ያልተገለጸ') + '<br>' +
+                                 '<b>ስልክ:</b> ' + (o.phoneNumber || 'ያልተገለጸ') + '<br>' +
                                  '<b>ዕቃ:</b> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)<br>' +
-                                 '<small>' + o.timestamp + '</small>';
+                                 '<small style="color: #777;">የታዘዘበት ቀን፦ ' + (o.timestamp || '') + '</small>';
+                                 
                 container.appendChild(card);
             });
         } else {
-            container.innerHTML = '<p style="text-align:center; color:#999;">ምንም ትዕዛዝ የለም</p>';
+            container.innerHTML = '<p style="text-align:center; color:#999;">እስካሁን ምንም የተመዘገበ ትዕዛዝ የለም።</p>';
         }
     }
 });
