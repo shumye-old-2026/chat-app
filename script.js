@@ -5,6 +5,9 @@ import { database } from './firebase-config.js';
 // 2. ካርታውን አዲስ አበባ ላይ ማንቀሳቀስ (Initialize)
 const map = L.map('map').setView([9.0192, 38.7525], 13);
 
+setTimeout(() => {
+    map.invalidateSize();
+}, 200);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
