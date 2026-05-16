@@ -9,7 +9,20 @@ const marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
 
 // አሁን ከዚህ በታች ያሉት ያንተ የድሮ ኮዶች ይቀጥላሉ...
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { database } from './firebase-config.js'; // 1. መጀመሪያ ካርታውን እናስጀምር (ከሁሉም በፊት መሆን አለበት!)
+const map = L.map('map').setView([9.0192, 38.7525], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
+
+// አሁን ከዚህ በታች ያሉት ያንተ የድሮ ኮዶች ይቀጥላሉ...
+import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
+
+// የተቀረው የFirebase እና የButton ኮድ እዚህ ይቀጥላል...
 
 // የተቀረው የFirebase እና የButton ኮድ እዚህ ይቀጥላል...
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
