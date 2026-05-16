@@ -1,21 +1,9 @@
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
 
-// 1. ካርታውን ማስጀመር
-var map = L.map('map').setView([9.0192, 38.7525], 13);
+// ማሳሰቢያ፡ map እና marker ከ index.html ላይ በግሎባል ስለሚመጡ እዚህ ላይ በድጋሚ መጻፍ አያስፈልግም!
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
-}).addTo(map);
-
-// የግራጫ ካርታ መፍትሄ (ካርታውን መቀስቀሻ)
-setTimeout(function() {
-    map.invalidateSize();
-}, 500);
-
-var marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
-
-// 2. ትዕዛዝ መላክ
+// 1. ትዕዛዝ መላክ
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
     sendBtn.onclick = function() {
@@ -23,6 +11,8 @@ if (sendBtn) {
         const phone = document.getElementById('phone').value;
         const item = document.getElementById('item').value;
         const price = document.getElementById('price').value;
+        
+        // ከ index.html ማርከር ላይ ቦታውን ይወስዳል
         const pos = marker.getLatLng();
 
         if (name && phone && item && price) {
@@ -34,7 +24,7 @@ if (sendBtn) {
                 location: { lat: pos.lat, lon: pos.lng },
                 timestamp: new Date().toLocaleString()
             }).then(function() {
-                alert('ትዕዛዝዎ ተልኳል! ✅');
+                alert('트ዕዛዝዎ ተልኳል! ✅');
                 document.getElementById('custName').value = '';
                 document.getElementById('phone').value = '';
                 document.getElementById('item').value = '';
@@ -46,7 +36,7 @@ if (sendBtn) {
     };
 }
 
-// 3. ዝርዝሮችን ማሳየት (ያለ ባክቲክ)
+// 2. ዝርዝሮችን ማሳየት
 const container = document.getElementById('orderContainer');
 onValue(ref(database, 'orders'), function(snapshot) {
     const data = snapshot.val();

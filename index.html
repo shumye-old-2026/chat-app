@@ -39,10 +39,20 @@
 
 <div id="map"></div>
 
-<div class="form-container">
-    <h3 style="color:#1a73e8; margin-top:0;">የመጡ ትዕዛዞች 📋</h3>
-    <div id="orderContainer"></div>
-</div>
+<script>
+    var map = L.map('map').setView([9.0192, 38.7525], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var marker = L.marker([9.0192, 38.7525], {draggable: true}).addTo(map);
+
+    // ካርታው ራሱን እንዲያድስ ማገዣ
+    setTimeout(function() { 
+        map.invalidateSize(); 
+    }, 400);
+</script>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module" src="script.js?v=final"></script>
