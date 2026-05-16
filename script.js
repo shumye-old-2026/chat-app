@@ -16,6 +16,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 
 
+// 3. መረጃን ወደ Firebase ለመላክ (የላክ በተን ሥራ)
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
   sendBtn.onclick = function () {
@@ -43,7 +44,7 @@ if (sendBtn) {
     const ordersRef = ref(database, 'orders');
     push(ordersRef, orderData)
       .then(() => {
-        alert('🎉 ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!');
+        alert('🎉 ትዕዛዝዎ በተሳካ ሁኔታ ወደ Firebase ተልኳል!');
         location.reload(); // ገጹን አድሶ ሳጥኖቹን ያጸዳቸዋል
       })
       .catch((error) => {
