@@ -1,17 +1,18 @@
+// 1. የFirebase አስመጪዎች (Imports)
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { database } from './firebase-config.js';
 
-// 1. ካርታውን አዲስ አበባ ላይ እናስጀምር
+// 2. ካርታውን አዲስ አበባ ላይ ማንቀሳቀስ (Initialize)
 const map = L.map('map').setView([9.0192, 38.7525], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// የሚንቀሳቀስ ማርከር መፍጠር
+// የሚንቀሳቀስ ማርከር (Marker) መፍጠር
 const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 
-// 2. መረጃን ወደ Firebase ለመላክ (የላክ በተን)
+// 3. መረጃን ወደ Firebase ለመላክ (የላክ በተን ስራ)
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
     sendBtn.onclick = function() {
@@ -45,7 +46,7 @@ if (sendBtn) {
     };
 }
 
-// 3. የተላኩ ትዕዛዞችን ከFirebase አምጥቶ ማሳየት
+// 4. የተላኩ ትዕዛዞችን ከFirebase አምጥቶ ማሳየት
 const container = document.getElementById('orderContainer');
 onValue(ref(database, 'orders'), (snapshot) => {
     const data = snapshot.val();
@@ -57,7 +58,7 @@ onValue(ref(database, 'orders'), (snapshot) => {
                 const card = document.createElement('div');
                 card.className = 'order-card';
                 
-                // እዚህ ጋር ምንም Backtick የለም - ተራ ነጠላ ሰረዝ ስለሆነ ስህተት አይፈጥርም
+                // እዚህ ጋር ፍጹም ባክቲክ የለም! በተራ ነጠላ ሰረዝ ብቻ ነው የተገናኘው
                 card.innerHTML = '<b>ስም:</b> ' + (o.customerName || 'ያልተገለጸ') + '<br>' +
                                  '<b>ስልክ:</b> ' + (o.phoneNumber || 'ያልተገለጸ') + '<br>' +
                                  '<b>ዕቃ:</b> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)<br>' +
