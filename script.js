@@ -15,62 +15,43 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // የሚንቀሳቀስ ማርከር (Marker) መፍጠር
 const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 
-// 3. መረጃን ወደ Firebase ለመላክ (የላክ በተን ስራ)
+// // 3. መረጃን ወደ Firebase ለመላክ (የላክ በተን ሥራ)
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
-    sendBtn.onclick = function() {
-        const name = document.getElementById('custName').value;
-        const phone = document.getElementById('phone').value;
-        const item = document.getElementById('item').value;
-        const price = document.getElementById('price').value;
-        
-        const pos = marker.getLatLng();
+  sendBtn.onclick = function () {
+    // በቅጽ (Form) ውስጥ የተሞሉትን መረጃዎች መውሰድ
+    const customerName = document.getElementById('customerName').value;
+    const phone = document.getElementById('phone').value;
+    const itemType = document.getElementById('itemType').value;
+    const price = document.getElementById('price').value;
 
-        if (name && phone && item && price) {
-            push(ref(database, 'orders'), {
-                customerName: name,
-                phoneNumber: phone,
-                orderItem: item,
-                orderPrice: price,
-                location: { lat: pos.lat, lon: pos.lng },
-                timestamp: new Date().toLocaleString()
-            }).then(function() {
-                alert('ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል! 🚀');
-                document.getElementById('custName').value = '';
-                document.getElementById('phone').value = '';
-                document.getElementById('item').value = '';
-                document.getElementById('price').value = '';
-            }).catch(function(error) {
-                alert('ስህተት ተከስቷል፦ ' + error.message);
-            });
-        } else {
-            alert('እባክዎ ሁሉንም መረጃዎች በአግባቡ ይሙሉ!');
-        }
+    // የላኪው ማርከር (Marker) ያለበትን የካርታ መጋጠሚያ (Latitude & Longitude) ማግኘት
+    const position = marker.getLatLng();
+
+    // ሁሉንም መረጃ በአንድ ላይ ማደራጀት
+    const orderData = {
+      name: customerName,
+      phone: phone,
+      item: itemType,
+      price: price,
+      latitude: position.lat,
+      longitude: position.lng,
+      timestamp: new Date().toISOString()
     };
-}
 
-// 4. የተላኩ ትዕዛዞችን ከFirebase አምጥቶ ማሳየት
-const container = document.getElementById('orderContainer');
-onValue(ref(database, 'orders'), (snapshot) => {
-    const data = snapshot.val();
-    if (container) {
-        container.innerHTML = ''; 
-        if (data) {
-            Object.keys(data).reverse().forEach(function(key) {
-                const o = data[key];
-                const card = document.createElement('div');
-                card.className = 'order-card';
-                
-                // እዚህ ጋር ፍጹም ባክቲክ የለም! በተራ ነጠላ ሰረዝ ብቻ ነው የተገናኘው
-                card.innerHTML = '<b>ስም:</b> ' + (o.customerName || 'ያልተገለጸ') + '<br>' +
-                                 '<b>ስልክ:</b> ' + (o.phoneNumber || 'ያልተገለጸ') + '<br>' +
-                                 '<b>ዕቃ:</b> ' + o.orderItem + ' (' + o.orderPrice + ' ብር)<br>' +
-                                 '<small style="color: #777;">የታዘዘበት ቀን፦ ' + (o.timestamp || '') + '</small>';
-                                 
-                container.appendChild(card);
-            });
-        } else {
-            container.innerHTML = '<p style="text-align:center; color:#999;">እስካሁን ምንም የተመዘገበ ትዕዛዝ የለም።</p>';
-        }
-    }
-});
+    // መረጃውን ወደ Firebase 'orders' ወደሚባል ክፍል መግፋት (Push ማድረግ)
+    const ordersRef = ref(database, 'orders');
+    push(ordersRef, orderData)
+      .then(() => {
+        alert('🎉 ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!');
+        // ፎርሙን በባዶ ማጽዳት
+        document.getElementById('customerName').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('itemType').value = '';
+        document.getElementById('price').value = '';
+      })
+      .catch((error) => {
+        alert('❌ ስህተት ተፈጥሯል: ' + error.message);
+      });
+  };
+}
