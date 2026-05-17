@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="am" dir="ltr">
+<html lang="am">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,6 @@
       margin: 0;
       padding: 0;
       background-color: #f4f6f9;
-      direction: ltr; /* ወደ መደበኛው የግራ አቅጣጫ እንዲመለስ ያደርገዋል */
     }
     #map {
       height: 350px;
@@ -25,26 +24,39 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
-      color: #333;
+    
+    /* እያንዳንዱን መፃፊያ ሳጥን እና ሌብል ወደ ቀኝ የሚያሰልፍ ክፍል */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; /* አይኮን እና ጽሑፉን ወደ ቀኝ ያደርጋል */
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
       font-size: 15px;
-      text-align: left; /* ጽሑፉ በግራ በኩል እንዲጀምር */
+      color: #333;
+      margin-bottom: 5px;
+      text-align: right;
     }
-    input[type="text"], input[type="number"] {
+    
+    .form-group input {
       width: 100%;
       padding: 12px;
-      margin-top: 5px;
-      margin-bottom: 5px;
       border: 1px solid #ccc;
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 14px;
-      text-align: left; /* መፃፊያው በግራ በኩል እንዲጀምር */
+      text-align: right; /* በመፃፍ ላይ ያለ ጽሑፍ ከቀኝ እንዲጀምር */
+      direction: rtl;    /* የሳጥኑ መፃፊያ መነሻ አቅጣጫ ወደ ቀኝ እንዲሆን */
     }
+    
     button {
       width: 100%;
       padding: 12px;
@@ -66,6 +78,7 @@
       max-width: 500px;
       margin: 20px auto;
       padding: 10px;
+      box-sizing: border-box;
     }
     h2, h3 {
       text-align: center;
@@ -80,19 +93,28 @@
   <div id="map"></div>
 
   <div class="form-container">
-    <label><strong>👤 የደንበኛ ስም</strong></label>
-    <input type="text" id="customerName" placeholder="የእርስዎን ስም ያስገቡ" />
+    
+    <div class="form-group">
+      <label>የደገበኛ ስም 👤</label>
+      <input type="text" id="customerName" placeholder="የእርስዎን ስም ያስገቡ" />
+    </div>
 
-    <label><strong>📞 ስልክ ቁጥር</strong></label>
-    <input type="text" id="phone" placeholder="ስልክ ቁጥር ያስገቡ" />
+    <div class="form-group">
+      <label>ስልክ ቁጥር 📞</label>
+      <input type="text" id="phone" placeholder="ስልክ ቁጥር ያስገቡ" />
+    </div>
 
-    <label><strong>📦 የዕቃው ዓይነት</strong></label>
-    <input type="text" id="itemType" placeholder="የሚፈልጉትን ዕቃ ስም" />
+    <div class="form-group">
+      <label>የዕቃው ዓይነት 📦</label>
+      <input type="text" id="itemType" placeholder="የሚፈልጉትን ዕቃ ስም" />
+    </div>
 
-    <label><strong>🏢 ማድረሻ ሰፈር / የተለየ ቦታ</strong></label>
-    <input type="text" id="deliveryArea" placeholder="ምሳሌ፡ ቦሌ መድኃኔዓለም ህንፃ ፊት ለፊት" />
+    <div class="form-group">
+      <label>ማድረሻ ሰፈር / የተለየ ቦታ 🏢</label>
+      <input type="text" id="deliveryArea" placeholder="ምሳሌ፡ ቦሌ መድኃኔዓለም ህንፃ ፊት ለፊት" />
+    </div>
 
-    <button id="sendBtn">ትዕዛዝ ላክ ✅</button>
+    <button id="sendBtn">✅ ትዕዛዝ ላክ</button>
   </div>
 
   <div class="list-container">
