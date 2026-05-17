@@ -13,7 +13,6 @@
       background-color: #f4f6f9;
     }
     
-    /* የተመለሰው ሰማያዊ ሄደር (Header) */
     .app-header {
       background-color: #1976d2;
       color: white;
@@ -45,11 +44,10 @@
       box-sizing: border-box;
     }
     
-    /* ሁሉንም መረጃዎች ከግራ ወደ ቀኝ (Left-to-Right) የሚያሰልፍ ክፍል */
     .form-group {
       display: flex;
       flex-direction: column;
-      align-items: flex-start; /* ጽሑፍና አይኮን በግራ እንዲጀምሩ ያደርጋል */
+      align-items: flex-start;
       margin-bottom: 15px;
       width: 100%;
     }
@@ -71,15 +69,9 @@
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 14px;
-      text-align: left; /* መፃፊያው በግራ በኩል ይጀምራል */
-      direction: ltr;   /* አቅጣጫው መደበኛ LTR ይሆናል */
-    }
-
-    /* የሳጥን ውስጥ መረጃ ጠቋሚ ጽሑፍ ከግራ እንዲጀምር */
-    .form-group input::placeholder {
       text-align: left;
     }
-    
+
     button {
       width: 100%;
       padding: 12px;
@@ -89,6 +81,7 @@
       font-weight: bold;
       font-size: 16px;
       margin-top: 15px;
+      transition: background 0.3s ease;
     }
     #sendBtn {
       background-color: #2e7d32;
@@ -97,16 +90,44 @@
     #sendBtn:hover {
       background-color: #1b5e20;
     }
+    #sendBtn:disabled {
+      background-color: #a5d6a7;
+      cursor: not-allowed;
+    }
 
+    /* የሻጭ ክፍል ዲዛይን */
     .list-container {
       max-width: 500px;
-      margin: 20px auto;
-      padding: 10px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       box-sizing: border-box;
     }
     h3 {
       text-align: center;
       color: #333;
+      margin-top: 0;
+    }
+    .admin-lock-box {
+      text-align: center;
+      padding: 15px;
+    }
+    .admin-lock-box input {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .admin-lock-box button {
+      background-color: #1976d2;
+      color: white;
+      width: 50%;
+      padding: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -119,7 +140,6 @@
   <div id="map"></div>
 
   <div class="form-container">
-    
     <div class="form-group">
       <label>👤 የደንበኛ ስም</label>
       <input type="text" id="customerName" placeholder="የእርስዎን ስም ያስገቡ" />
@@ -127,7 +147,7 @@
 
     <div class="form-group">
       <label>📞 ስልክ ቁጥር</label>
-      <input type="text" id="phone" placeholder="ስልክ ቁጥር ያስገቡ" />
+      <input type="tel" id="phone" placeholder="ስልክ ቁጥር ያስገቡ" />
     </div>
 
     <div class="form-group">
@@ -145,10 +165,16 @@
 
   <div class="list-container">
     <h3>📋 የተላኩ ትዕዛዞች ዝርዝር (ለሻጭ ብቻ)</h3>
-    <div id="ordersContainer"></div>
-  </div>
+    
+    <div id="adminAuthBox" class="admin-lock-box">
+      <p style="color: #666; font-size: 14px;">ይህንን ዝርዝር ለማየት የሻጭ ሚስጥር ቁጥር ያስገቡ፦</p>
+      <input type="password" id="adminPassword" placeholder="የሚስጥር ቁጥር ያስገቡ" />
+      <button id="loginAdminBtn">ክፈት 🔓</button>
+    </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div id="ordersContainer" style="display: none;"></div>
+  </div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
