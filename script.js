@@ -1,4 +1,4 @@
-import { ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+ import { ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { database } from "./firebase_config.js";
 
 // 1. Initialize Map at Addis Ababa
@@ -30,7 +30,7 @@ if (sendBtn) {
     const itemType = document.getElementById("itemType")?.value;
     const deliveryArea = document.getElementById("deliveryArea")?.value;
 
-    if (!customerName || !phone || !itemType || !deliveryArea) {
+    if (!customerName ||  !phone || !itemType || !deliveryArea) {
       alert("እባክዎ ሁሉንም ሳጥኖች በትክክል ይሙሉ!");
       return;
     }
@@ -49,7 +49,7 @@ if (sendBtn) {
     const ordersRef = ref(database, "orders");
     push(ordersRef, orderData)
       .then(function () {
-        alert("🎉 ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል! ሻጩ ዋጋውን አይቶ ይደውልልዎታል።");
+        alert("🎉 ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል! ሻጩ ዋጋውን አይቶ ይደውልልዎ.");
         document.getElementById("customerName").value = "";
         document.getElementById("phone").value = "";
         document.getElementById("itemType").value = "";
@@ -61,7 +61,7 @@ if (sendBtn) {
   };
 }
 
-// 3. Admin View: Display Orders (የካርዶቹ አሰላለፍ ከግራ ወደ ቀኝ የተስተካከለበት)
+// 3. Admin View: Display Orders (የካርዶቹን ጽሑፍ አሰላለፍ ከግራ ወደ ቀኝ የሚያደርግ)
 const ordersListRef = ref(database, "orders");
 onValue(ordersListRef, function (snapshot) {
   let ordersContainer = document.getElementById("ordersContainer");
@@ -91,7 +91,7 @@ onValue(ordersListRef, function (snapshot) {
       Object.keys(data).reverse().forEach(function (key) {
         const order = data[key];
         
-        // ዋናው ካርድ
+        // ዋናው ካርድ ሳጥን
         const orderCard = document.createElement("div");
         orderCard.style.border = "1px solid #e0e0e0";
         orderCard.style.borderRadius = "12px";
@@ -102,9 +102,12 @@ onValue(ordersListRef, function (snapshot) {
         orderCard.style.fontSize = "15px";
         orderCard.style.color = "#333";
         orderCard.style.lineHeight = "1.8";
-        orderCard.style.textAlign = "left"; /* ጽሑፎቹ በሙሉ በግራ በኩል እንዲጀምሩ ተደረገ! */
+        
+        // ጽሑፎቹና አይኮኖቹ በሙሉ በግራ በኩል እንዲሰለፉ የሚያዝዝ ክፍል
+        orderCard.style.textAlign = "left"; 
+        orderCard.style.direction = "ltr";
 
-        // የጽሑፍ ዝርዝሮች
+        // የውስጥ መረጃ ዝርዝሮች (ከግራ ወደ ቀኝ የተደረደሩ)
         const nameDiv = document.createElement("div");
         nameDiv.innerHTML = "👤 <strong>ደንበኛ:</strong> " + (order.name || "ያልተጠቀሰ");
         orderCard.appendChild(nameDiv);
@@ -112,7 +115,7 @@ onValue(ordersListRef, function (snapshot) {
         const phoneDiv = document.createElement("div");
         phoneDiv.innerHTML = "📞 <strong>ስልክ:</strong> " + (order.phone || "ያልተጠቀሰ");
         orderCard.appendChild(phoneDiv);
- const itemDiv = document.createElement("div");
+const itemDiv = document.createElement("div");
         itemDiv.innerHTML = "📦 <strong>የዕቃ ዓይነት:</strong> " + (order.item || "ያልተጠቀሰ");
         orderCard.appendChild(itemDiv);
 
@@ -120,7 +123,7 @@ onValue(ordersListRef, function (snapshot) {
         areaDiv.innerHTML = "🏢 <strong>ማድረሻ ሰፈር:</strong> " + (order.area || "ያልተጠቀሰ");
         orderCard.appendChild(areaDiv);
 
-        // የዋጋ ክፍል
+        // የዋጋ ማሳያ ክፍል
         let priceColor = "#2e7d32";
         if (order.price && order.price.includes("አልወሰነም")) {
           priceColor = "#d32f2f";
@@ -129,12 +132,12 @@ onValue(ordersListRef, function (snapshot) {
         priceDiv.innerHTML = "💵 <strong>የዕቃ + ማድረሻ ዋጋ:</strong> <span style='color: " + priceColor + "; font-weight: bold;'>" + order.price + "</span>";
         orderCard.appendChild(priceDiv);
 
-        // የካርታ መጋጠሚያ
+        // የካርታ መጋጠሚያ ክፍል
         const geoDiv = document.createElement("div");
         geoDiv.innerHTML = "📍 <strong>ካርታ መጋጠሚያ:</strong> <span style='color: #1976d2;'>ላቲ፡ " + parseFloat(order.latitude).toFixed(4) + " ፣ ሎንጊ፡ " + parseFloat(order.longitude).toFixed(4) + "</span>";
         orderCard.appendChild(geoDiv);
           
-        // የዋጋ ማሳወቂያ ሜኑ ሳጥን (ከግራ ወደ ቀኝ እንዲሆን አሰላለፉ የተስተካከለ)
+        // የዋጋ ማሳወቂያ ሜኑ ሳጥን (አሰላለፉ ከግራ ወደ ቀኝ የሆነ)
         const priceSection = document.createElement("div");
         priceSection.style.marginTop = "10px";
         priceSection.style.padding = "8px";
@@ -153,6 +156,7 @@ onValue(ordersListRef, function (snapshot) {
         priceInput.style.fontSize = "13px";
         priceInput.style.border = "1px solid #ccc";
         priceInput.style.borderRadius = "4px";
+        priceInput.style.textAlign = "left";
 
         const priceBtn = document.createElement("button");
         priceBtn.id = "btnPrice_" + key;
@@ -172,7 +176,7 @@ onValue(ordersListRef, function (snapshot) {
         priceSection.appendChild(priceBtn);
         orderCard.appendChild(priceSection);
 
-        // ማጥፊያ በተን
+        // ማጥፊያ በተን (🗑️)
         const deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = "እቃው ደርሷል (አጥፋ) 🗑️";
         deleteBtn.style.marginTop = "10px";
@@ -199,13 +203,13 @@ onValue(ordersListRef, function (snapshot) {
           if (savePriceBtn) {
             savePriceBtn.onclick = function () {
               const enteredPrice = document.getElementById("inputPrice_" + key).value;
-              if (!enteredPrice) {
-alert("እባክዎ መጀመሪያ ዋጋ ያስገቡ!");
+if (!enteredPrice) {
+                alert("እባክዎ መጀመሪያ ዋጋ ያስገቡ!");
                 return;
               }
               update(ref(database, "orders/" + key), { price: enteredPrice + " ብር" })
                 .then(function () { 
-                  alert("💵 ዋጋው በተሳካ ሁኔታ ተሻሽሏል!"); 
+                  alert("💵 ዋጋው በተሳካ ሁኔታ ተሻшሏል!"); 
                 })
                 .catch(function (err) { 
                   alert("ስህተት: " + err.message); 
