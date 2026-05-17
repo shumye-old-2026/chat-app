@@ -12,11 +12,29 @@
       padding: 0;
       background-color: #f4f6f9;
     }
+    
+    /* የተመለሰው ሰማያዊ ሄደር (Header) */
+    .app-header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin-bottom: 0;
+    }
+    .app-header h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+    }
+
     #map {
       height: 350px;
       width: 100%;
       border-bottom: 2px solid #ddd;
     }
+
     .form-container {
       max-width: 500px;
       margin: 20px auto;
@@ -27,11 +45,11 @@
       box-sizing: border-box;
     }
     
-    /* እያንዳንዱን መፃፊያ ሳጥን እና ሌብል ወደ ቀኝ የሚያሰልፍ ክፍል */
+    /* ሁሉንም መረጃዎች ከግራ ወደ ቀኝ (Left-to-Right) የሚያሰልፍ ክፍል */
     .form-group {
       display: flex;
       flex-direction: column;
-      align-items: flex-end; /* አይኮን እና ጽሑፉን ወደ ቀኝ ያደርጋል */
+      align-items: flex-start; /* ጽሑፍና አይኮን በግራ እንዲጀምሩ ያደርጋል */
       margin-bottom: 15px;
       width: 100%;
     }
@@ -43,7 +61,7 @@
       font-size: 15px;
       color: #333;
       margin-bottom: 5px;
-      text-align: right;
+      text-align: left;
     }
     
     .form-group input {
@@ -53,8 +71,13 @@
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 14px;
-      text-align: right; /* በመፃፍ ላይ ያለ ጽሑፍ ከቀኝ እንዲጀምር */
-      direction: rtl;    /* የሳጥኑ መፃፊያ መነሻ አቅጣጫ ወደ ቀኝ እንዲሆን */
+      text-align: left; /* መፃፊያው በግራ በኩል ይጀምራል */
+      direction: ltr;   /* አቅጣጫው መደበኛ LTR ይሆናል */
+    }
+
+    /* የሳጥን ውስጥ መረጃ ጠቋሚ ጽሑፍ ከግራ እንዲጀምር */
+    .form-group input::placeholder {
+      text-align: left;
     }
     
     button {
@@ -74,13 +97,14 @@
     #sendBtn:hover {
       background-color: #1b5e20;
     }
+
     .list-container {
       max-width: 500px;
       margin: 20px auto;
       padding: 10px;
       box-sizing: border-box;
     }
-    h2, h3 {
+    h3 {
       text-align: center;
       color: #333;
     }
@@ -88,29 +112,31 @@
 </head>
 <body>
 
-  <h2>📍 የትዕዛዝ ማቅረቢያ ማዕከል</h2>
+  <div class="app-header">
+    <h2>📍 የትዕዛዝ ማቅረቢያ ማዕከል</h2>
+  </div>
   
   <div id="map"></div>
 
   <div class="form-container">
     
     <div class="form-group">
-      <label>የደገበኛ ስም 👤</label>
+      <label>👤 የደንበኛ ስም</label>
       <input type="text" id="customerName" placeholder="የእርስዎን ስም ያስገቡ" />
     </div>
 
     <div class="form-group">
-      <label>ስልክ ቁጥር 📞</label>
+      <label>📞 ስልክ ቁጥር</label>
       <input type="text" id="phone" placeholder="ስልክ ቁጥር ያስገቡ" />
     </div>
 
     <div class="form-group">
-      <label>የዕቃው ዓይነት 📦</label>
+      <label>📦 የዕቃው ዓይነት</label>
       <input type="text" id="itemType" placeholder="የሚፈልጉትን ዕቃ ስም" />
     </div>
 
     <div class="form-group">
-      <label>ማድረሻ ሰፈር / የተለየ ቦታ 🏢</label>
+      <label>🏢 ማድረሻ ሰፈር / የተለየ ቦታ</label>
       <input type="text" id="deliveryArea" placeholder="ምሳሌ፡ ቦሌ መድኃኔዓለም ህንፃ ፊት ለፊት" />
     </div>
 
