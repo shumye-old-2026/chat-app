@@ -1,8 +1,7 @@
-// 1. Firebase Imports
 import { ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { database } from "./firebase_config.js";
 
-// 2. Initialize Map at Addis Ababa
+// 1. Initialize Map at Addis Ababa
 const map = L.map("map").setView([9.0192, 38.7525], 13);
 
 setTimeout(function () {
@@ -22,7 +21,7 @@ marker.on("dragend", function () {
   currentPosition = marker.getLatLng();
 });
 
-// 3. Send Order to Firebase (Client Side)
+// 2. Send Order to Firebase (Client Side)
 const sendBtn = document.getElementById("sendBtn");
 if (sendBtn) {
   sendBtn.onclick = function () {
@@ -62,7 +61,7 @@ if (sendBtn) {
   };
 }
 
-// 4. Admin View: Display Orders (የቪኤስ ኮድን ኤረር ለማጥፋት በንጹህ DOM የተሰራ)
+// 3. Admin View: Display Orders (የካርዶቹ አሰላለፍ ከግራ ወደ ቀኝ የተስተካከለበት)
 const ordersListRef = ref(database, "orders");
 onValue(ordersListRef, function (snapshot) {
   let ordersContainer = document.getElementById("ordersContainer");
@@ -103,22 +102,22 @@ onValue(ordersListRef, function (snapshot) {
         orderCard.style.fontSize = "15px";
         orderCard.style.color = "#333";
         orderCard.style.lineHeight = "1.8";
-        orderCard.style.textAlign = "right";
+        orderCard.style.textAlign = "left"; /* ጽሑፎቹ በሙሉ በግራ በኩል እንዲጀምሩ ተደረገ! */
 
-        // የጽሑፍ ዝርዝሮች (ቪኤስ ኮድ እንዳይሳሳት በተናጠል የተፈጠሩ)
+        // የጽሑፍ ዝርዝሮች
         const nameDiv = document.createElement("div");
-        nameDiv.innerHTML = "<strong>👤 ደንበኛ:</strong> " + (order.name || "ያልተጠቀሰ");
+        nameDiv.innerHTML = "👤 <strong>ደንበኛ:</strong> " + (order.name || "ያልተጠቀሰ");
         orderCard.appendChild(nameDiv);
 
         const phoneDiv = document.createElement("div");
-        phoneDiv.innerHTML = "<strong>📞 ስልክ:</strong> " + (order.phone || "ያልተጠቀሰ");
+        phoneDiv.innerHTML = "📞 <strong>ስልክ:</strong> " + (order.phone || "ያልተጠቀሰ");
         orderCard.appendChild(phoneDiv);
-const itemDiv = document.createElement("div");
-        itemDiv.innerHTML = "<strong>📦 የዕቃ ዓይነት:</strong> " + (order.item || "ያልተጠቀሰ");
+ const itemDiv = document.createElement("div");
+        itemDiv.innerHTML = "📦 <strong>የዕቃ ዓይነት:</strong> " + (order.item || "ያልተጠቀሰ");
         orderCard.appendChild(itemDiv);
 
         const areaDiv = document.createElement("div");
-        areaDiv.innerHTML = "<strong>🏢 ማድረሻ ሰፈር:</strong> " + (order.area || "ያልተጠቀሰ");
+        areaDiv.innerHTML = "🏢 <strong>ማድረሻ ሰፈር:</strong> " + (order.area || "ያልተጠቀሰ");
         orderCard.appendChild(areaDiv);
 
         // የዋጋ ክፍል
@@ -127,37 +126,39 @@ const itemDiv = document.createElement("div");
           priceColor = "#d32f2f";
         }
         const priceDiv = document.createElement("div");
-        priceDiv.innerHTML = "<strong>💵 የዕቃ + ማድረሻ ዋጋ:</strong> <span style='color: " + priceColor + "; font-weight: bold;'>" + order.price + "</span>";
+        priceDiv.innerHTML = "💵 <strong>የዕቃ + ማድረሻ ዋጋ:</strong> <span style='color: " + priceColor + "; font-weight: bold;'>" + order.price + "</span>";
         orderCard.appendChild(priceDiv);
 
         // የካርታ መጋጠሚያ
         const geoDiv = document.createElement("div");
-        geoDiv.innerHTML = "<strong>📍 ካርታ መጋጠሚያ:</strong> <span style='color: #1976d2;'>ላቲ፡ " + parseFloat(order.latitude).toFixed(4) + " ፣ ሎንጊ፡ " + parseFloat(order.longitude).toFixed(4) + "</span>";
+        geoDiv.innerHTML = "📍 <strong>ካርታ መጋጠሚያ:</strong> <span style='color: #1976d2;'>ላቲ፡ " + parseFloat(order.latitude).toFixed(4) + " ፣ ሎንጊ፡ " + parseFloat(order.longitude).toFixed(4) + "</span>";
         orderCard.appendChild(geoDiv);
           
-        // የዋጋ ማሳወቂያ ሜኑ ሳጥን
+        // የዋጋ ማሳወቂያ ሜኑ ሳጥን (ከግራ ወደ ቀኝ እንዲሆን አሰላለፉ የተስተካከለ)
         const priceSection = document.createElement("div");
         priceSection.style.marginTop = "10px";
         priceSection.style.padding = "8px";
         priceSection.style.backgroundColor = "#f9f9f9";
         priceSection.style.borderRadius = "6px";
         priceSection.style.border = "1px dashed #ccc";
+        priceSection.style.display = "flex";
+        priceSection.style.gap = "5px";
 
         const priceInput = document.createElement("input");
         priceInput.type = "number";
         priceInput.id = "inputPrice_" + key;
         priceInput.placeholder = "ዋጋ በብር ያስገቡ";
-        priceInput.style.width = "60%";
-        priceInput.style.padding = "5px";
+        priceInput.style.width = "65%";
+        priceInput.style.padding = "8px";
         priceInput.style.fontSize = "13px";
-        priceInput.style.display = "inline-block";
-        priceInput.style.marginLeft = "5px";
+        priceInput.style.border = "1px solid #ccc";
+        priceInput.style.borderRadius = "4px";
 
         const priceBtn = document.createElement("button");
         priceBtn.id = "btnPrice_" + key;
         priceBtn.innerHTML = "ዋጋ አሳውቅ";
         priceBtn.style.width = "35%";
-        priceBtn.style.padding = "6px";
+        priceBtn.style.padding = "8px";
         priceBtn.style.backgroundColor = "#1976d2";
         priceBtn.style.color = "white";
         priceBtn.style.border = "none";
@@ -165,7 +166,7 @@ const itemDiv = document.createElement("div");
         priceBtn.style.fontWeight = "bold";
         priceBtn.style.cursor = "pointer";
         priceBtn.style.fontSize = "13px";
-        priceBtn.style.display = "inline-block";
+        priceBtn.style.margin = "0";
 
         priceSection.appendChild(priceInput);
         priceSection.appendChild(priceBtn);
@@ -179,7 +180,7 @@ const itemDiv = document.createElement("div");
         deleteBtn.style.color = "white";
         deleteBtn.style.border = "none";
         deleteBtn.style.borderRadius = "6px";
-        deleteBtn.style.padding = "8px 12px";
+        deleteBtn.style.padding = "10px 12px";
         deleteBtn.style.cursor = "pointer";
         deleteBtn.style.fontWeight = "bold";
         deleteBtn.style.width = "100%";
@@ -199,10 +200,10 @@ const itemDiv = document.createElement("div");
             savePriceBtn.onclick = function () {
               const enteredPrice = document.getElementById("inputPrice_" + key).value;
               if (!enteredPrice) {
-                alert("እባክዎ መጀመሪያ ዋጋ ያስገቡ!");
+alert("እባክዎ መጀመሪያ ዋጋ ያስገቡ!");
                 return;
               }
-update(ref(database, "orders/" + key), { price: enteredPrice + " ብር" })
+              update(ref(database, "orders/" + key), { price: enteredPrice + " ብር" })
                 .then(function () { 
                   alert("💵 ዋጋው በተሳካ ሁኔታ ተሻሽሏል!"); 
                 })
