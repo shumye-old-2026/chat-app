@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="am" dir="rtl">
+<html lang="am" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
       margin: 0;
       padding: 0;
       background-color: #f4f6f9;
-      direction: rtl; /* ለአማርኛ ጽሑፍ አሰላለፍ */
+      direction: ltr; /* ወደ መደበኛው የግራ አቅጣጫ እንዲመለስ ያደርገዋል */
     }
     #map {
       height: 350px;
@@ -26,16 +26,24 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: #333;
+      font-size: 15px;
+      text-align: left; /* ጽሑፉ በግራ በኩል እንዲጀምር */
+    }
     input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin-top: 5px;
-      margin-bottom: 15px;
+      margin-bottom: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
       box-sizing: border-box;
       font-size: 14px;
-      text-align: right;
+      text-align: left; /* መፃፊያው በግራ በኩል እንዲጀምር */
     }
     button {
       width: 100%;
@@ -45,6 +53,7 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 16px;
+      margin-top: 15px;
     }
     #sendBtn {
       background-color: #2e7d32;
