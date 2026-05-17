@@ -1,8 +1,8 @@
-// 1. የFirebase አስመጪዎች (Imports) - 'onValue' እዚህ ጋር ተጨምሯል
-import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+ // 1. Firebase Imports
+import { ref, push, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 import { database } from './firebase_config.js';
 
-// 2. ካርታውን አዲስ አበባ ላይ መክፈት
+// 2. Initialize Map at Addis Ababa
 const map = L.map('map').setView([9.0192, 38.7525], 13);
 
 setTimeout(() => {
@@ -13,23 +13,21 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// የሚንቀሳቀስ ማርከር (Marker) መፍጠር
+// Create Draggable Marker
 const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 
-// 3. መረጃን ወደ Firebase ለመላክ (የላክ በተን ሥራ)
+// 3. Send Order to Firebase
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
   sendBtn.onclick = function () {
-    // በቅጽ (Form) ውስጥ የተሞሉትን መረጃዎች መውሰድ
     const customerName = document.getElementById('customerName')?.value || document.querySelector('input[type="text"]')?.value;
     const phone = document.getElementById('phone')?.value || document.querySelectorAll('input')[1]?.value;
     const itemType = document.getElementById('itemType')?.value || document.querySelectorAll('input')[2]?.value;
     const price = document.getElementById('price')?.value || document.querySelectorAll('input')[3]?.value;
 
-    // የማርከሩን መጋጠሚያ (Location) ማግኘት
-    const position = marker.getLatLng();
+    // Get current marker position dynamically
+    const position = marker.getLatLng(); 
 
-    // ሁሉንም መረጃ ማደራጀት
     const orderData = {
       name: customerName,
       phone: phone,
@@ -40,12 +38,16 @@ if (sendBtn) {
       timestamp: new Date().toISOString()
     };
 
-    // ወደ Firebase 'orders' በሚለው ስር መረጃውን መግፋት (Push)
     const ordersRef = ref(database, 'orders');
     push(ordersRef, orderData)
       .then(() => {
         alert('🎉 ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!');
-        location.reload(); // ገጹን ያድሳል
+        if(document.getElementById('customerName')) {
+          document.getElementById('customerName').value = '';
+          document.getElementById('phone').value = '';
+          document.getElementById('itemType').value = '';
+          document.getElementById('price').value = '';
+        }
       })
       .catch((error) => {
         alert('❌ ስህተት ተፈጥሯል: ' + error.message);
@@ -53,7 +55,7 @@ if (sendBtn) {
   };
 }
 
-// 4. ከ Firebase መረጃዎችን እየሳቡ ከታች በዝርዝር ማሳየት
+// 4. Listen to Firebase and Display Orders + Delete Button
 const ordersListRef = ref(database, 'orders');
 onValue(ordersListRef, (snapshot) => {
   let ordersContainer = document.getElementById('ordersContainer');
@@ -81,28 +83,53 @@ onValue(ordersListRef, (snapshot) => {
       Object.keys(data).reverse().forEach((key) => {
         const order = data[key];
         
+        // UI Styling for Cards
         const orderCard = document.createElement('div');
-        orderCard.style.border = '1px solid #ddd';
-        orderCard.style.borderRadius = '8px';
-        orderCard.style.padding = '12px';
-        orderCard.style.marginBottom = '10px';
-        orderCard.style.backgroundColor = '#fff';
-        orderCard.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-        orderCard.style.fontSize = '14px';
+        orderCard.style.border = '1px solid #e0e0e0';
+        orderCard.style.borderRadius = '12px';
+        orderCard.style.padding = '15px';
+        orderCard.style.marginBottom = '15px';
+        orderCard.style.backgroundColor = '#ffffff';
+        orderCard.style.boxShadow = '0 4px 8px rgba(0,0,0,0.06)';
+        orderCard.style.fontSize = '15px';
         orderCard.style.color = '#333';
+        orderCard.style.lineHeight = '1.6';
+        orderCard.style.position = 'relative';
 
-        // እዚህ ጋር በዕረፍት ምልክቶች ስህተት እንዳይፈጠር string አድርገን ነው የጻፍነው
         orderCard.innerHTML = 
-          "<strong>👤 ስም:</strong> " + (order.name || 'ያልተጠቀሰ') + "<br />" +
+          "<strong>👤 ደንበኛ:</strong> " + (order.name || 'ያልተጠቀሰ') + "<br />" +
           "<strong>📞 ስልክ:</strong> " + (order.phone || 'ያልተጠቀሰ') + "<br />" +
-          "<strong>📦 ዕቃ:</strong> " + (order.item || 'ያልተጠቀሰ') + "<br />" +
-          "<strong>💵 ዋጋ:</strong> " + (order.price || '0') + " ብር<br />" +
-          "<strong>📍 መገኛ:</strong> ላቲ፡ " + parseFloat(order.latitude).toFixed(4) + "፣ ሎንጊ፡ " + parseFloat(order.longitude).toFixed(4);
+          "<strong>📦 የዕቃ ዓይነት:</strong> " + (order.item || 'ያልተጠቀሰ') + "<br />" +
+          "<strong>💵 የተስማሙበት ዋጋ:</strong> <span style='color: #2e7d32; font-weight: bold;'>" + (order.price || '0') + " ብር</span><br />" +
+ "<strong>📍 መገኛ (ካርታ):</strong> <span style='color: #1976d2;'>ላቲ፡ " + parseFloat(order.latitude).toFixed(4) + " ፣ ሎንጊ፡ " + parseFloat(order.longitude).toFixed(4) + "</span><br />";
           
+        // Delete Button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerHTML = 'እቃው ደርሷል (አጥፋ) 🗑️';
+        deleteBtn.style.marginTop = '10px';
+        deleteBtn.style.backgroundColor = '#d32f2f';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.borderRadius = '6px';
+        deleteBtn.style.padding = '6px 12px';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.fontWeight = 'bold';
+        deleteBtn.style.width = '100%';
+        
+        deleteBtn.onclick = function() {
+          if (confirm('ይህ ትዕዛዝ በተሳካ ሁኔታ መድረሱን አረጋግጠው ማጥፋት ይፈልጋሉ?')) {
+            const itemRef = ref(database, 'orders/' + key);
+            remove(itemRef)
+              .then(() => { alert('🗑️ ትዕዛዙ ከዝርዝሩ ላይ ተሰርዟል!'); })
+              .catch((err) => { alert('ስህተት: ' + err.message); });
+          }
+        };
+        
+        orderCard.appendChild(deleteBtn);
         ordersContainer.appendChild(orderCard);
       });
     } else {
-      ordersContainer.innerHTML = '<p style="color: gray; padding: 5px; text-align: center;">እስካሁን የተላከ ምንም ትዕዛዝ የለም።</p>';
+      ordersContainer.innerHTML = '<p style="color: gray; padding: 15px; text-align: center; font-style: italic;">እስካሁን የተላከ ምንም ትዕዛዝ የለም።</p>';
     }
   }
 });
