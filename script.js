@@ -1,4 +1,4 @@
-// 1. የFirebase አስመጪዎች (Imports)
+// 1. የFirebase አስመጪዎች (Imports) - 'onValue' እዚህ ጋር ተጨምሯል
 import { ref, push, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 import { database } from './firebase_config.js';
 
@@ -20,7 +20,7 @@ const marker = L.marker([9.0192, 38.7525], { draggable: true }).addTo(map);
 const sendBtn = document.getElementById('sendBtn');
 if (sendBtn) {
   sendBtn.onclick = function () {
-    // በቅጽ (Form) ውስጥ የተሞሉትን መረጃዎች መውሰድ (id ከሌለ በቅደም ተከተል ይፈልጋል)
+    // በቅጽ (Form) ውስጥ የተሞሉትን መረጃዎች መውሰድ
     const customerName = document.getElementById('customerName')?.value || document.querySelector('input[type="text"]')?.value;
     const phone = document.getElementById('phone')?.value || document.querySelectorAll('input')[1]?.value;
     const itemType = document.getElementById('itemType')?.value || document.querySelectorAll('input')[2]?.value;
@@ -40,7 +40,7 @@ if (sendBtn) {
       timestamp: new Date().toISOString()
     };
 
-    // ወደ Firebase መግፋት (Push)
+    // ወደ Firebase 'orders' በሚለው ስር መረጃውን መግፋት (Push)
     const ordersRef = ref(database, 'orders');
     push(ordersRef, orderData)
       .then(() => {
@@ -52,3 +52,57 @@ if (sendBtn) {
       });
   };
 }
+
+// 4. ከ Firebase መረጃዎችን እየሳቡ ከታች በዝርዝር ማሳየት
+const ordersListRef = ref(database, 'orders');
+onValue(ordersListRef, (snapshot) => {
+  let ordersContainer = document.getElementById('ordersContainer');
+  
+  if (!ordersContainer) {
+    const h3Elements = document.querySelectorAll('h3');
+    let targetH3;
+    h3Elements.forEach(h3 => {
+      if (h3.textContent.includes('የተላኩ')) targetH3 = h3;
+    });
+    
+    if (targetH3) {
+      ordersContainer = document.createElement('div');
+      ordersContainer.id = 'ordersContainer';
+      ordersContainer.style.padding = '10px';
+      targetH3.parentNode.insertBefore(ordersContainer, targetH3.nextSibling);
+    }
+  }
+
+  if (ordersContainer) {
+    ordersContainer.innerHTML = ''; 
+
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      Object.keys(data).reverse().forEach((key) => {
+        const order = data[key];
+        
+        const orderCard = document.createElement('div');
+        orderCard.style.border = '1px solid #ddd';
+        orderCard.style.borderRadius = '8px';
+        orderCard.style.padding = '12px';
+        orderCard.style.marginBottom = '10px';
+        orderCard.style.backgroundColor = '#fff';
+        orderCard.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        orderCard.style.fontSize = '14px';
+        orderCard.style.color = '#333';
+
+        // እዚህ ጋር በዕረፍት ምልክቶች ስህተት እንዳይፈጠር string አድርገን ነው የጻፍነው
+        orderCard.innerHTML = 
+          "<strong>👤 ስም:</strong> " + (order.name || 'ያልተጠቀሰ') + "<br />" +
+          "<strong>📞 ስልክ:</strong> " + (order.phone || 'ያልተጠቀሰ') + "<br />" +
+          "<strong>📦 ዕቃ:</strong> " + (order.item || 'ያልተጠቀሰ') + "<br />" +
+          "<strong>💵 ዋጋ:</strong> " + (order.price || '0') + " ብር<br />" +
+          "<strong>📍 መገኛ:</strong> ላቲ፡ " + parseFloat(order.latitude).toFixed(4) + "፣ ሎንጊ፡ " + parseFloat(order.longitude).toFixed(4);
+          
+        ordersContainer.appendChild(orderCard);
+      });
+    } else {
+      ordersContainer.innerHTML = '<p style="color: gray; padding: 5px; text-align: center;">እስካሁን የተላከ ምንም ትዕዛዝ የለም።</p>';
+    }
+  }
+});
