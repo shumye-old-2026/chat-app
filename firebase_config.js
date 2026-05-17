@@ -1,15 +1,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// እነዚህን መረጃዎች ከእውነተኛው የFirebase Console ፕሮጀክትህ ላይ ወስደህ ተካቸው
+// የአንተ እውነተኛ የFirebase ቁልፎች
 const firebaseConfig = {
-  apiKey: "የአንተን_እውነተኛ_API_KEY_እዚህ_አስገባ",
-  authDomain: "የአንተን_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://የአንተን_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "የአንተን_PROJECT_ID",
-  storageBucket: "የአንተን_PROJECT_ID.appspot.com",
-  messagingSenderId: "የአንተን_SENDER_ID_አስገባ",
-  appId: "የአንተን_APP_ID_አስገባ"
+  apiKey: "AIzaSyBVwvrXBlyaIISyUFf2NyLFBq_mmcvaPCc",
+  authDomain: "my-chat-app-393d0.firebaseapp.com",
+  databaseURL: "https://my-chat-app-393d0-default-rtdb.firebaseio.com",
+  projectId: "my-chat-app-393d0",
+  storageBucket: "my-chat-app-393d0.firebasestorage.app",
+  messagingSenderId: "836061447359",
+  appId: "1:836061447359:web:9a071fb5931ad8b50e320a"
 };
 
 const app = initializeApp(firebaseConfig);
