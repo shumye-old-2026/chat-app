@@ -1,64 +1,97 @@
 <!DOCTYPE html>
-<html lang="am">
+<html lang="am" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>የዕቃ ማዘዣ እና ካርታ</title>
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f6f9; color: #333; }
-        header { text-align: center; padding: 15px; background: #007bff; color: white; border-radius: 8px; margin-bottom: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #218838; }
-        #map { height: 350px; width: 100%; margin: 20px 0; border-radius: 8px; border: 2px solid #ddd; background-color: #e5e5e5; }
-        .order-section { margin-top: 30px; }
-        .order-card { background: #fff; border-left: 5px solid #007bff; padding: 15px; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>የቀጥታ ትዕዛዝ ማቅረቢያ ካርታ</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;
+      direction: rtl; /* ለአማርኛ ጽሑፍ አሰላለፍ */
+    }
+    #map {
+      height: 350px;
+      width: 100%;
+      border-bottom: 2px solid #ddd;
+    }
+    .form-container {
+      max-width: 500px;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+      text-align: right;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    #sendBtn {
+      background-color: #2e7d32;
+      color: white;
+    }
+    #sendBtn:hover {
+      background-color: #1b5e20;
+    }
+    .list-container {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+    h2, h3 {
+      text-align: center;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h2>የደንበኞች ማዘዣ ማዕከል</h2>
-        </header>
+  <h2>📍 የትዕዛዝ ማቅረቢያ ማዕከል</h2>
+  
+  <div id="map"></div>
 
-        <div class="form-group">
-            <label for="custName">የደንበኛ ስም</label>
-            <input type="text" id="custName" placeholder="ስም ያስገቡ">
-        </div>
-        <div class="form-group">
-            <label for="phone">ስልክ ቁጥር</label>
-            <input type="tel" id="phone" placeholder="09...">
-        </div>
-        <div class="form-group">
-            <label for="item">የዕቃው ዓይነት</label>
-            <input type="text" id="item" placeholder="የዕቃው ስም">
-        </div>
-        <div class="form-group">
-            <label for="price">ዋጋ (በብር)</label>
-            <input type="number" id="price" placeholder="ዋጋ">
-        </div>
+  <div class="form-container">
+    <label><strong>👤 የደንበኛ ስም</strong></label>
+    <input type="text" id="customerName" placeholder="የእርስዎን ስም ያስገቡ" />
 
-        <label>የማድረሻ ቦታ (ካርታው ላይ ምልክቱን ያንቀሳቅሱ)</label>
-        <div id="map"></div>
+    <label><strong>📞 ስልክ ቁጥር</strong></label>
+    <input type="text" id="phone" placeholder="ስልክ ቁጥር ያስገቡ" />
 
-        <button id="sendBtn">ትዕዛዝ ላክ ✅</button>
+    <label><strong>📦 የዕቃው ዓይነት</strong></label>
+    <input type="text" id="itemType" placeholder="የሚፈልጉትን ዕቃ ስም" />
 
-        <div class="order-section">
-            <h3>የተላኩ ትዕዛዞች ዝርዝር</h3>
-            <div id="orderContainer"></div>
-        </div>
-    </div>
+    <label><strong>🏢 ማድረሻ ሰፈር / የተለየ ቦታ</strong></label>
+    <input type="text" id="deliveryArea" placeholder="ምሳሌ፡ ቦሌ መድኃኔዓለም ህንፃ ፊት ለፊት" />
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <script type="module" src="script.js"></script>
+    <button id="sendBtn">ትዕዛዝ ላክ ✅</button>
+  </div>
 
+  <div class="list-container">
+    <h3>📋 የተላኩ ትዕዛዞች ዝርዝር (ለሻጭ ብቻ)</h3>
+    <div id="ordersContainer"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
