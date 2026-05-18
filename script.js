@@ -31,7 +31,7 @@ if (sendBtn) {
     const itemType = document.getElementById("itemType")?.value;
     const deliveryArea = document.getElementById("deliveryArea")?.value;
 
-    if (!customerName || !phone  ||!itemType || !deliveryArea) {
+    if (!customerName || !phone || !itemType || !deliveryArea) {
       alert("እባክዎ ሁሉንም ሳጥኖች በትክክል ይሙሉ!");
       return;
     }
@@ -39,15 +39,20 @@ if (sendBtn) {
     sendBtn.disabled = true;
     sendBtn.innerHTML = "በመላክ ላይ... ⏳";
 
+    // የአሁኑን ሰዓትና ቀን በኢትዮጵያ ፎርማት ማዘጋጃ
+    const now = new Date();
+    const timeString = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    const dateString = now.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
     const orderData = {
       name: customerName,
       phone: phone,
       item: itemType,
       area: deliveryArea,
-      price: "ሻጩ አልወሰነም",
+      price: "导ጩ አልወሰነም",
       latitude: currentPosition.lat,
       longitude: currentPosition.lng,
-      timestamp: new Date().toISOString()
+      time: dateString + " | " + timeString // ሰዓት እዚህ ተቀመጠ
     };
 
     const ordersRef = ref(database, "orders");
@@ -89,12 +94,33 @@ if (loginAdminBtn) {
   };
 }
 
-// 4. Display Orders (ሙሉ በሙሉ ባክቲክ የሌለበት የተስተካከለ ክፍል)
+// 4. Display Orders (አዳዲስ ማሻሻያዎችን ያካተተ ንጹህ ክፍል)
 function loadOrders() {
   const ordersListRef = ref(database, "orders");
   onValue(ordersListRef, function (snapshot) {
     if (!ordersContainer) return;
     ordersContainer.innerHTML = ""; 
+
+    // የ "ውጣ (Logout)" በተን መፍጠሪያ
+    const logoutBtn = document.createElement("button");
+    logoutBtn.innerHTML = "🔒 ከአስተዳዳሪ ክፍል ውጣ";
+    logoutBtn.style.width = "100%";
+    logoutBtn.style.padding = "10px";
+    logoutBtn.style.marginBottom = "20px";
+    logoutBtn.style.backgroundColor = "#555555";
+    logoutBtn.style.color = "white";
+    logoutBtn.style.border = "none";
+logoutBtn.style.borderRadius = "8px";
+    logoutBtn.style.cursor = "pointer";
+    logoutBtn.style.fontWeight = "bold";
+    
+    logoutBtn.onclick = function() {
+      adminPasswordInput.value = "";
+      ordersContainer.style.display = "none";
+      adminAuthBox.style.display = "block";
+      alert("🔒 በሰላም ወጥተዋል!");
+    };
+    ordersContainer.appendChild(logoutBtn);
 
     if (snapshot.exists()) {
       const data = snapshot.val();
@@ -113,21 +139,23 @@ function loadOrders() {
         orderCard.style.lineHeight = "1.8";
         orderCard.style.textAlign = "left"; 
         orderCard.style.direction = "ltr";
-// የደንበኛ መረጃዎችን በተለመደው የጥቅስ ምልክት (" ") ብቻ ማሳያ
+
+        // የስልክ ቁጥሩን በቀጥታ የሚደወል ሊንክ (tel:) አደረግነው
         orderCard.innerHTML = 
           "<div>👤 <strong>ደንበኛ:</strong> " + (order.name || "ያልተጠቀሰ") + "</div>" +
-          "<div>📞 <strong>ስልክ:</strong> " + (order.phone || "ያልተጠቀሰ") + "</div>" +
+          "<div>📞 <strong>ስልክ:</strong> <a href='tel:" + order.phone + "' style='color: #2e7d32; font-weight: bold; text-decoration: underline;'>" + (order.phone || "ያልተጠቀሰ") + " 📞 በቀጥታ ደውል</a></div>" +
           "<div>📦 <strong>የዕቃ ዓይነት:</strong> " + (order.item || "ያልተጠቀሰ") + "</div>" +
-          "<div>🏢 <strong>ማድረሻ ሰፈር:</strong> " + (order.area || "ያልተጠቀሰ") + "</div>";
+          "<div>🏢 <strong>ማድረሻ ሰፈር:</strong> " + (order.area || "ያልተጠቀሰ") + "</div>" +
+          "<div>🕒 <strong>የተላከበት ሰዓት:</strong> <span style='color: #777;'>" + (order.time || "ያልታወቀ ሰዓት") + "</span></div>";
 
-        // የዋጋ ቀለም ማስተካከያ (በተለመደው ጥቅስ)
+        // የዋጋ ቀለም ማስተካከያ
         let priceColor = order.price && order.price.includes("አልወሰነም") ? "#d32f2f" : "#2e7d32";
         const priceDiv = document.createElement("div");
         priceDiv.innerHTML = "💵 <strong>የዕቃ + ማድረሻ ዋጋ:</strong> <span style='color: " + priceColor + "; font-weight: bold;'>" + order.price + "</span>";
         orderCard.appendChild(priceDiv);
 
-        // የጉግል ካርታ አቅጣጫ ሊንክ (በተለመደው ጥቅስ)
-        const googleMapsUrl = "https://www.google.com/maps?q=" + order.latitude + "," + order.longitude;
+        // የጉግል ካርታ ትክክለኛ አቅጣጫ መክፈቻ ሊንክ
+        const googleMapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + order.latitude + "," + order.longitude;
         const geoDiv = document.createElement("div");
         geoDiv.innerHTML = "📍 <strong>መገኛ (ካርታ):</strong> <a href='" + googleMapsUrl + "' target='_blank' style='color: #1976d2; font-weight: bold; text-decoration: underline;'>በጎግል ካርታ አቅጣጫ አሳይ 🗺️</a>";
         orderCard.appendChild(geoDiv);
@@ -162,8 +190,7 @@ function loadOrders() {
         priceBtn.style.cursor = "pointer";
         priceBtn.style.fontSize = "13px";
         priceBtn.style.margin = "0";
-
-        priceBtn.onclick = function () {
+ priceBtn.onclick = function () {
           const enteredPrice = priceInput.value;
           if (!enteredPrice) {
             alert("እባክዎ መጀመሪያ ዋጋ ያስገቡ!");
